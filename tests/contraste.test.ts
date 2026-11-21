@@ -1,9 +1,11 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
-// WCAG 1.4.3: texto normal ≥ 4,5:1.  WCAG 1.4.11: bordes de controles y foco ≥ 3:1.
-// Los colores se leen de src/app/globals.css, así que si alguien los cambia y rompe el
-// contraste en el tema claro o en el oscuro, esta prueba falla.
+// WCAG 1.4.3: texto normal ≥ 4,5:1 (AA).  WCAG 1.4.6: ≥ 7:1 (AAA) en las paletas de alto contraste.
+// WCAG 1.4.11: bordes de controles y foco ≥ 3:1 (≥ 4,5:1 en alto contraste).
+// Los colores se leen de src/app/globals.css: si alguien los cambia y rompe el contraste en
+// cualquiera de las cuatro paletas (clara, oscura, clara+alto contraste, oscura+alto contraste),
+// esta prueba falla.
 
 const css = readFileSync(resolve(__dirname, "../src/app/globals.css"), "utf8");
 
@@ -15,10 +17,36 @@ function leerColores(bloque: string): Record<string, string> {
   return colores;
 }
 
-const claro = leerColores(css.match(/:root\s*\{([^}]*)\}/)![1]);
-const oscuro = {
-  ...claro,
-  ...leerColores(css.match(/prefers-color-scheme:\s*dark\)\s*\{\s*:root\s*\{([^}]*)\}/)![1]),
+/** Variables de `:root` fuera de cualquier @media. */
+const base = leerColores(css.match(/^:root\s*\{([^}]*)\}/m)![1]);
+
+/** Variables de `@media (<condición>) { :root { … } }`. Falla si la condición no existe. */
+function enMedia(condicion: string): Record<string, string> {
+  for (const [, cond, cuerpo] of css.matchAll(
+    /@media\s*([^{]+?)\s*\{\s*:root\s*\{([^}]*)\}\s*\}/g,
+  )) {
+    if (cond === condicion) return leerColores(cuerpo);
+  }
+  throw new Error(`No se encontró @media ${condicion} en globals.css`);
+}
+
+const oscuroEnCss = enMedia("(prefers-color-scheme: dark)");
+const masContrasteEnCss = enMedia("(prefers-contrast: more)");
+const oscuroMasContrasteEnCss = enMedia(
+  "(prefers-color-scheme: dark) and (prefers-contrast: more)",
+);
+
+// Se aplican en el mismo orden que en el CSS: el último bloque que coincide gana.
+const PALETAS = {
+  claro: base,
+  oscuro: { ...base, ...oscuroEnCss },
+  "claro + alto contraste": { ...base, ...masContrasteEnCss },
+  "oscuro + alto contraste": {
+    ...base,
+    ...oscuroEnCss,
+    ...masContrasteEnCss,
+    ...oscuroMasContrasteEnCss,
+  },
 };
 
 function luminancia(hex: string): number {
@@ -48,16 +76,42 @@ const PARES: [string, string, number, string][] = [
   ["acento", "fondo", 3, "indicador de foco"],
 ];
 
-describe.each([
-  ["tema claro", claro],
-  ["tema oscuro", oscuro],
-])("contraste · %s", (_, colores) => {
+/** En alto contraste el texto debe llegar a AAA (7:1) y los bordes a 4,5:1. */
+function minimoPara(paleta: string, minimo: number): number {
+  if (!paleta.includes("alto contraste")) return minimo;
+  return minimo >= 4.5 ? 7 : 4.5;
+}
+
+describe.each(Object.entries(PALETAS))("contraste · %s", (nombre, colores) => {
+  it("define los 9 colores", () => {
+    expect(Object.keys(colores).sort()).toEqual(Object.keys(base).sort());
+    expect(Object.keys(colores)).toHaveLength(9);
+  });
+
   it.each(PARES)("%s sobre %s ≥ %s:1 (%s)", (primerPlano, fondo, minimo) => {
+    const exigido = minimoPara(nombre, minimo);
     const razon = contraste(colores[primerPlano], colores[fondo]);
     expect(
       razon,
-      `${primerPlano} ${colores[primerPlano]} sobre ${fondo} ${colores[fondo]}`,
-    ).toBeGreaterThanOrEqual(minimo);
+      `${primerPlano} ${colores[primerPlano]} sobre ${fondo} ${colores[fondo]} = ${razon.toFixed(2)}:1, se exige ${exigido}:1`,
+    ).toBeGreaterThanOrEqual(exigido);
+  });
+});
+
+describe("las paletas son distintas entre sí", () => {
+  it("cada una cambia el fondo o el texto respecto a la clara", () => {
+    const { claro, ...otras } = PALETAS;
+    for (const [nombre, paleta] of Object.entries(otras)) {
+      const igual = paleta.fondo === claro.fondo && paleta.texto === claro.texto;
+      // La clara con alto contraste conserva el fondo blanco pero cambia el texto a negro puro.
+      expect(igual, nombre).toBe(false);
+    }
+  });
+
+  it("el alto contraste es de verdad más contrastado que su paleta normal", () => {
+    const c = (p: Record<string, string>) => contraste(p["texto-suave"], p.fondo);
+    expect(c(PALETAS["claro + alto contraste"])).toBeGreaterThan(c(PALETAS.claro));
+    expect(c(PALETAS["oscuro + alto contraste"])).toBeGreaterThan(c(PALETAS.oscuro));
   });
 });
 
@@ -68,10 +122,5 @@ describe("contraste · la fórmula", () => {
 
   it("detecta un gris que no llega a 4,5:1 (#777 sobre blanco ≈ 4,48)", () => {
     expect(contraste("#777777", "#ffffff")).toBeLessThan(4.5);
-  });
-
-  it("lee las dos paletas de globals.css", () => {
-    expect(claro.fondo).toBe("#ffffff");
-    expect(oscuro.fondo).not.toBe(claro.fondo);
   });
 });

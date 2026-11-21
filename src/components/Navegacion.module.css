@@ -27,3 +27,10 @@
   color: var(--texto);
   border-bottom-color: var(--acento);
 }
+
+/* Con colores forzados el color se pierde: la página actual se marca además con subrayado. */
+@media (forced-colors: active) {
+  .enlace[aria-current="page"] {
+    text-decoration: underline;
+  }
+}

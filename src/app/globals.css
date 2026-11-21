@@ -1,4 +1,15 @@
+/*
+ * Cuatro paletas, todas con el contraste comprobado en tests/contraste.test.ts:
+ *   1. clara (por defecto)             → texto ≥ 4,5:1 (WCAG AA)
+ *   2. oscura (prefers-color-scheme)   → texto ≥ 4,5:1
+ *   3. clara con alto contraste        → texto ≥ 7:1 (WCAG AAA)
+ *   4. oscura con alto contraste       → texto ≥ 7:1
+ * El orden importa: cada bloque se apoya en el anterior, y el último que aplica gana.
+ */
 :root {
+  /* Hace que los controles del navegador (scrollbars, selects) sigan el tema. */
+  color-scheme: light dark;
+
   --fondo: #ffffff;
   --fondo-campo: #ffffff;
   --texto: #1a1a1a;
@@ -21,6 +32,34 @@
     --acento-hover: #8cc2ff;
     --texto-boton: #0a0a0a;
     --error: #ff8a95;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --fondo: #ffffff;
+    --fondo-campo: #ffffff;
+    --texto: #000000;
+    --texto-suave: #1f1f1f;
+    --borde: #000000;
+    --acento: #003f8a;
+    --acento-hover: #002a5c;
+    --texto-boton: #ffffff;
+    --error: #8a0014;
+  }
+}
+
+@media (prefers-color-scheme: dark) and (prefers-contrast: more) {
+  :root {
+    --fondo: #000000;
+    --fondo-campo: #000000;
+    --texto: #ffffff;
+    --texto-suave: #e6e6e6;
+    --borde: #ffffff;
+    --acento: #9fd0ff;
+    --acento-hover: #c4e1ff;
+    --texto-boton: #000000;
+    --error: #ffb3bb;
   }
 }
 
@@ -47,4 +86,11 @@ main {
 :focus-visible {
   outline: 3px solid var(--acento);
   outline-offset: 2px;
+}
+
+/* Colores forzados (modo de alto contraste de Windows): el sistema pone los colores. */
+@media (forced-colors: active) {
+  :focus-visible {
+    outline-color: Highlight;
+  }
 }

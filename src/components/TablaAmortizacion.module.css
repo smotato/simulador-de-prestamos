@@ -49,7 +49,7 @@
   font-weight: 600;
   color: var(--texto-boton);
   background: var(--acento);
-  border: 0;
+  border: 2px solid transparent;
   border-radius: 0.5rem;
   cursor: pointer;
 }
