@@ -16,8 +16,8 @@ Taller R4 · Simulador de préstamos. Este documento reúne las evidencias de la
 | ---------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------ |
 | `npm run check`                    | Pasa (tipos, ESLint sin advertencias, Prettier, pruebas)      | Pasa, código de salida 0 ([registro](calidad/evidencias/npm-run-check.txt))                       | ✅                                   |
 | Cobertura de la lógica de negocio  | ≥ 80 %                                                        | 99,35 % sentencias · 98,3 % ramas · 100 % funciones ([§9](#9-pruebas-y-cobertura))                | ✅                                   |
-| Pruebas unitarias y de componentes | —                                                             | 203 pasan (Vitest)                                                                                | ✅                                   |
-| Pruebas en navegador real          | —                                                             | 111 pasan (Playwright) ([registro](calidad/evidencias/e2e-playwright.txt))                        | ✅                                   |
+| Pruebas unitarias y de componentes | —                                                             | 247 pasan (Vitest)                                                                                | ✅                                   |
+| Pruebas en navegador real          | —                                                             | 112 pasan (Playwright) ([registro](calidad/evidencias/e2e-playwright.txt))                        | ✅                                   |
 | Sin scroll horizontal              | 320, 360, 640, 768 y 1024 px                                  | Cumple en las 7 páginas ([§3](#3-responsive-360--768--1024-px))                                   | ✅                                   |
 | axe                                | 0 violaciones                                                 | 0 en jsdom y 0 en Chromium (4 paletas × 7 páginas × 2 anchos) ([§4](#4-accesibilidad-wcag-22-aa)) | ✅                                   |
 | Contraste                          | Texto ≥ 4,5:1 · controles ≥ 3:1                               | Cumple en 4 paletas; alto contraste ≥ 7:1 ([§4](#4-accesibilidad-wcag-22-aa))                     | ✅                                   |
@@ -32,6 +32,8 @@ Taller R4 · Simulador de préstamos. Este documento reúne las evidencias de la
 ## 2. Lighthouse
 
 Primera medición hecha el **2026-11-21** sobre la dirección de producción, con Lighthouse 13.5.0 desde DevTools (throttling simulado, modo Navegación). Informes en `calidad/lighthouse/`.
+
+> 🔄 **Estas mediciones son del diseño anterior.** Después se rediseñó la interfaz (solo CSS, sin cambiar el JavaScript), así que hay que repetirlas todas sobre la versión final (pasos abajo).
 
 > ⚠️ **Medición provisional.** Cinco de los seis informes traen el aviso «las extensiones de Chrome afectaron al rendimiento» y el de `/` en escritorio terminó con un error al tomar la captura (`PROTOCOL_TIMEOUT`). Hay que **repetirla en una ventana de incógnito sin extensiones** (pasos abajo).
 
@@ -89,6 +91,13 @@ Reproducir: `npm run test:e2e` (pruebas) y `npm run e2e:capturas` (capturas).
 | Comparar                  | [360](calidad/capturas/comparar-360.png)  | [768](calidad/capturas/comparar-768.png)  | [1024](calidad/capturas/comparar-1024.png)  |
 | Historial                 | [360](calidad/capturas/historial-360.png) | [768](calidad/capturas/historial-768.png) | [1024](calidad/capturas/historial-1024.png) |
 
+**Capturas de los temas oscuro y de alto contraste** (reto 2):
+
+| Página                | Modo oscuro                                                                                           | Alto contraste (claro)                                                                                                |
+| --------------------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Con resultado y tabla | [360](calidad/capturas/resultado-oscuro-360.png) · [1024](calidad/capturas/resultado-oscuro-1024.png) | [360](calidad/capturas/resultado-alto-contraste-360.png) · [1024](calidad/capturas/resultado-alto-contraste-1024.png) |
+| Comparar              | [360](calidad/capturas/comparar-oscuro-360.png) · [1024](calidad/capturas/comparar-oscuro-1024.png)   | [360](calidad/capturas/comparar-alto-contraste-360.png) · [1024](calidad/capturas/comparar-alto-contraste-1024.png)   |
+
 **Defecto encontrado y corregido gracias a las capturas:** a 1024 px los campos del formulario se salían de su columna y tapaban el resumen (los campos de texto no se encogían en una cuadrícula de `1fr`). Se escribió primero una prueba que lo reproducía, falló, y se corrigió con `minmax(0, 1fr)`, `width: 100%` y `min-width: 0`.
 
 ⏳ **Pendiente:**
@@ -113,15 +122,15 @@ Reproducir: `npm run test:e2e` (pruebas) y `npm run e2e:capturas` (capturas).
 
 ### Manual ⏳ (pendiente: lo que una prueba automática no puede decir)
 
-| Comprobación                                         | Cómo                                                                                                                                                | Resultado                     | Fecha      |
-| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- | ---------- |
-| axe DevTools sobre la URL de producción              | Extensión axe DevTools → Analizar, en `/`, `/comparar` y `/historial` (guardar captura en `calidad/evidencias/`)                                    | TODO                          | TODO       |
-| Validador HTML del W3C                               | [validator.w3.org](https://validator.w3.org) → «Validate by Direct Input» con el código fuente (Ctrl+U) de cada página                              | TODO                          | TODO       |
-| Recorrido solo con teclado                           | Tab/Shift+Tab/Enter/Espacio por las 3 páginas, sin ratón                                                                                            | TODO                          | TODO       |
-| Zoom al 200 %                                        | Ctrl + «+» hasta 200 % en una ventana de 1280 px: sin perder contenido ni funciones                                                                 | TODO                          | TODO       |
-| Reflow a 320 px                                      | DevTools en modo dispositivo con 320 px de ancho: sin scroll horizontal (la automática ya lo cubre)                                                 | TODO                          | TODO       |
-| **Lector de pantalla** (NVDA en Windows o VoiceOver) | Pasar por el formulario con un error, por una simulación («Simulación calculada: cuota de…» debe anunciarse), por la tabla y por «Borrar historial» | TODO                          | TODO       |
-| `prefers-reduced-motion`                             | La aplicación no usa animaciones ni transiciones                                                                                                    | ✅ no aplica (sin movimiento) | 2026-11-21 |
+| Comprobación                                         | Cómo                                                                                                                                                | Resultado | Fecha      |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ---------- |
+| axe DevTools sobre la URL de producción              | Extensión axe DevTools → Analizar, en `/`, `/comparar` y `/historial` (guardar captura en `calidad/evidencias/`)                                    | TODO      | TODO       |
+| Validador HTML del W3C                               | [validator.w3.org](https://validator.w3.org) → «Validate by Direct Input» con el código fuente (Ctrl+U) de cada página                              | TODO      | TODO       |
+| Recorrido solo con teclado                           | Tab/Shift+Tab/Enter/Espacio por las 3 páginas, sin ratón                                                                                            | TODO      | TODO       |
+| Zoom al 200 %                                        | Ctrl + «+» hasta 200 % en una ventana de 1280 px: sin perder contenido ni funciones                                                                 | TODO      | TODO       |
+| Reflow a 320 px                                      | DevTools en modo dispositivo con 320 px de ancho: sin scroll horizontal (la automática ya lo cubre)                                                 | TODO      | TODO       |
+| **Lector de pantalla** (NVDA en Windows o VoiceOver) | Pasar por el formulario con un error, por una simulación («Simulación calculada: cuota de…» debe anunciarse), por la tabla y por «Borrar historial» | TODO      | TODO       |
+| `prefers-reduced-motion`                             | Hay transiciones cortas (0,15 s, solo de color); se apagan con «reducir movimiento» (prueba de Playwright que comprueba ambos casos)                | ✅        | 2026-11-21 |
 
 ## 5. Core Web Vitals
 
@@ -152,9 +161,11 @@ La aplicación ya mide las métricas reales con `useReportWebVitals`: cada una s
 
 | Ruta         | JavaScript | HTML   | CSS    | Fuente | Total aprox. |
 | ------------ | ---------- | ------ | ------ | ------ | ------------ |
-| `/`          | 181,8 kB   | 2,6 kB | 2,4 kB | 29 kB  | ≈ 216 kB     |
-| `/comparar`  | 180,6 kB   | 2,7 kB | 2,4 kB | 29 kB  | ≈ 215 kB     |
-| `/historial` | 179,7 kB   | 2,5 kB | 1,7 kB | 29 kB  | ≈ 213 kB     |
+| `/`          | 181,9 kB   | 2,7 kB | 3,3 kB | 29 kB  | ≈ 217 kB     |
+| `/comparar`  | 180,6 kB   | 2,8 kB | 3,3 kB | 29 kB  | ≈ 216 kB     |
+| `/historial` | 179,7 kB   | 2,5 kB | 2,3 kB | 29 kB  | ≈ 214 kB     |
+
+**Tras el rediseño** (2026-11-21, solo CSS: sin librerías, imágenes ni fuentes nuevas) el CSS subió ≈ 0,9 kB comprimidos y el JavaScript no cambió, así que la meta de 200 kB sigue cumpliéndose.
 
 - Meta de JavaScript ≤ 200 kB: **cumple** con ≈ 18 kB de margen. Los tres trozos más grandes (70 + 44 + 39 kB) son React y Next; el código propio es una parte pequeña.
 - Meta de página ≤ 1 MB: cumple con mucho margen.
@@ -210,13 +221,13 @@ Se eligieron tres (el mínimo exigido), cada uno con su evidencia y cómo reprod
 ### Reto 2 · Modo oscuro y alto contraste sin romper el contraste en ningún tema ✅
 
 - **Qué:** cuatro paletas (clara, oscura, clara con `prefers-contrast: more`, oscura con alto contraste), `color-scheme` y soporte de colores forzados de Windows.
-- **Evidencia:** `src/app/globals.css` y `tests/contraste.test.ts` (52 pruebas, leen los colores del CSS). En alto contraste exige 7:1 en texto. Además, axe en Chromium revisa las 4 paletas (reto 3).
+- **Evidencia:** `src/app/globals.css` y `tests/contraste.test.ts` (96 pruebas, leen los colores del CSS). En alto contraste exige 7:1 en texto. Además, axe en Chromium revisa las 4 paletas (reto 3).
 - **Reproducir:** `npx vitest run tests/contraste.test.ts`
 - **Comprobación de que no es un falso verde:** se degradó un color a propósito y la prueba falló («4,48:1, se exige 7:1»).
 
 ### Reto 3 · Prueba en 3 anchos con Playwright: sin scroll horizontal y 0 violaciones de axe ✅
 
-- **Qué:** 111 pruebas en Chromium real sobre la compilación de producción: layout en 320, 360, 640, 768 y 1024 px, axe en 4 paletas, teclado, descarga real del CSV, portapapeles, enlace compartible e historial.
+- **Qué:** 112 pruebas en Chromium real sobre la compilación de producción: layout en 320, 360, 640, 768 y 1024 px, axe en 4 paletas, teclado, descarga real del CSV, portapapeles, enlace compartible e historial.
 - **Evidencia:** carpeta `e2e/`, `playwright.config.ts`, [`calidad/evidencias/e2e-playwright.txt`](calidad/evidencias/e2e-playwright.txt) y las capturas de [§3](#3-responsive-360--768--1024-px).
 - **Reproducir:**
 
@@ -235,7 +246,7 @@ Se eligieron tres (el mínimo exigido), cada uno con su evidencia y cómo reprod
 
 ```text
 Test Files  22 passed (22)
-     Tests  203 passed (203)
+     Tests  247 passed (247)
 
 File          | % Stmts | % Branch | % Funcs | % Lines
 All files     |   99.35 |     98.3 |     100 |   99.28

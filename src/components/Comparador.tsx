@@ -16,7 +16,7 @@ export function Comparador() {
 
   return (
     <div className={styles.contenedor}>
-      <section aria-labelledby="titulo-datos">
+      <section className={styles.tarjeta} aria-labelledby="titulo-datos">
         <h2 id="titulo-datos">Datos del préstamo</h2>
         {!hayDatos && (
           <p>Escriba los datos del préstamo y pulse «Comparar» para ver los dos sistemas.</p>
@@ -31,7 +31,7 @@ export function Comparador() {
         />
       </section>
 
-      <section aria-labelledby="titulo-comparacion">
+      <section className={styles.tarjeta} aria-labelledby="titulo-comparacion">
         <h2 id="titulo-comparacion">Comparación</h2>
         {/* La región existe siempre, para que el lector de pantalla anuncie el cambio de texto. */}
         <div role="status" aria-live="polite" className={styles.frase}>
@@ -42,7 +42,12 @@ export function Comparador() {
           <div className={styles.sistemas}>
             {(["frances", "aleman"] as const).map((sistema) => (
               <article key={sistema} className={styles.sistema}>
-                <h3>{sistema === "frances" ? "Sistema francés" : "Sistema alemán"}</h3>
+                <div className={styles.cabecera}>
+                  <h3>{sistema === "frances" ? "Sistema francés" : "Sistema alemán"}</h3>
+                  {comparacion.masBarato === sistema && (
+                    <p className={styles.etiqueta}>Menos intereses</p>
+                  )}
+                </div>
                 <Resumen resumen={comparacion[sistema]} sistema={sistema} conNombre={false} />
                 <Link href={`/?${aParams({ ...valor, sistema })}`}>
                   Ver la tabla de amortización

@@ -5,61 +5,84 @@
  *   3. clara con alto contraste        → texto ≥ 7:1 (WCAG AAA)
  *   4. oscura con alto contraste       → texto ≥ 7:1
  * El orden importa: cada bloque se apoya en el anterior, y el último que aplica gana.
+ *
+ * Capas de color: --fondo (página) → --superficie (tarjetas) → --superficie-2 (detalles).
+ * --borde es el de los controles (≥ 3:1); --borde-suave es solo decorativo (bordes de tarjetas).
  */
 :root {
   /* Hace que los controles del navegador (scrollbars, selects) sigan el tema. */
   color-scheme: light dark;
 
-  --fondo: #ffffff;
+  --fondo: #f4f6fb;
+  --superficie: #ffffff;
+  --superficie-2: #eef1f8;
   --fondo-campo: #ffffff;
-  --texto: #1a1a1a;
-  --texto-suave: #4a4a4a;
-  --borde: #767676;
-  --acento: #0b5cad;
-  --acento-hover: #084a8c;
+  --texto: #151a2d;
+  --texto-suave: #475069;
+  --borde: #7b849c;
+  --borde-suave: #dde2ee;
+  --acento: #3445b4;
+  --acento-hover: #26358f;
+  --acento-fondo: #e6e9fb;
   --texto-boton: #ffffff;
-  --error: #b00020;
+  --error: #b3261e;
+  --sombra: 0 1px 2px rgb(21 26 45 / 6%), 0 8px 24px rgb(21 26 45 / 8%);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --fondo: #121212;
-    --fondo-campo: #1e1e1e;
-    --texto: #f1f1f1;
-    --texto-suave: #c4c4c4;
-    --borde: #8c8c8c;
-    --acento: #6ab0ff;
-    --acento-hover: #8cc2ff;
-    --texto-boton: #0a0a0a;
-    --error: #ff8a95;
+    --fondo: #0d1020;
+    --superficie: #171b30;
+    --superficie-2: #1f2440;
+    --fondo-campo: #11152a;
+    --texto: #eceffb;
+    --texto-suave: #aeb6d0;
+    --borde: #7f89ad;
+    --borde-suave: #2b3254;
+    --acento: #9aa8ff;
+    --acento-hover: #b9c3ff;
+    --acento-fondo: #262d5c;
+    --texto-boton: #0d1020;
+    --error: #ff9a94;
+    --sombra: 0 1px 2px rgb(0 0 0 / 40%), 0 8px 24px rgb(0 0 0 / 30%);
   }
 }
 
 @media (prefers-contrast: more) {
   :root {
     --fondo: #ffffff;
+    --superficie: #ffffff;
+    --superficie-2: #f0f0f0;
     --fondo-campo: #ffffff;
     --texto: #000000;
     --texto-suave: #1f1f1f;
     --borde: #000000;
-    --acento: #003f8a;
-    --acento-hover: #002a5c;
+    --borde-suave: #000000;
+    --acento: #1a237e;
+    --acento-hover: #0d1457;
+    --acento-fondo: #e8eaff;
     --texto-boton: #ffffff;
     --error: #8a0014;
+    --sombra: none;
   }
 }
 
 @media (prefers-color-scheme: dark) and (prefers-contrast: more) {
   :root {
     --fondo: #000000;
+    --superficie: #000000;
+    --superficie-2: #1a1a1a;
     --fondo-campo: #000000;
     --texto: #ffffff;
     --texto-suave: #e6e6e6;
     --borde: #ffffff;
-    --acento: #9fd0ff;
-    --acento-hover: #c4e1ff;
+    --borde-suave: #ffffff;
+    --acento: #b3beff;
+    --acento-hover: #d4dbff;
+    --acento-fondo: #1a1f4d;
     --texto-boton: #000000;
     --error: #ffb3bb;
+    --sombra: none;
   }
 }
 
@@ -71,9 +94,9 @@
 
 body {
   margin: 0;
-  padding: 1rem;
+  padding: 1rem clamp(1rem, 4vw, 2rem) 2rem;
   font-family: var(--font-geist-sans), system-ui, sans-serif;
-  line-height: 1.5;
+  line-height: 1.55;
   color: var(--texto);
   background: var(--fondo);
 }
@@ -83,9 +106,42 @@ main {
   margin-inline: auto;
 }
 
+h1 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(1.75rem, 1.2rem + 2.2vw, 2.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+/* Frase corta bajo el título de cada página (líneas de máximo ~60 caracteres). */
+.intro {
+  max-width: 60ch;
+  margin: 0 0 1.5rem;
+  font-size: 1.0625rem;
+  color: var(--texto-suave);
+}
+
+a {
+  color: var(--acento);
+  text-underline-offset: 0.2em;
+}
+
 :focus-visible {
   outline: 3px solid var(--acento);
   outline-offset: 2px;
+}
+
+/* Transiciones cortas de color; se apagan para quien pide menos movimiento. */
+@media (prefers-reduced-motion: no-preference) {
+  a,
+  button,
+  input,
+  select {
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease;
+  }
 }
 
 /* Colores forzados (modo de alto contraste de Windows): el sistema pone los colores. */

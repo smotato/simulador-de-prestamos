@@ -41,7 +41,7 @@ export function Simulador() {
       {/* La región existe siempre, para que el lector de pantalla anuncie el cambio de texto. */}
       <section className={styles.resumen} aria-labelledby="titulo-resultado">
         <h2 id="titulo-resultado">Resultado</h2>
-        <div aria-live="polite" role="status">
+        <div aria-live="polite" role="status" className={styles.anuncio}>
           {anuncio}
         </div>
         {simulacion ? (

@@ -1,17 +1,40 @@
 .contenedor {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 1.5rem;
+  gap: 1.25rem;
+}
+
+/* Cada bloque principal es una tarjeta. */
+.formulario,
+.resumen,
+.tabla {
+  padding: clamp(1rem, 3vw, 1.5rem);
+  background: var(--superficie);
+  border: 1px solid var(--borde-suave);
+  border-radius: 1rem;
+  box-shadow: var(--sombra);
 }
 
 .contenedor h2 {
-  margin-block: 0 0.75rem;
+  margin: 0 0 1rem;
   font-size: 1.25rem;
+  letter-spacing: -0.01em;
 }
 
 .vacio {
   margin: 0;
   color: var(--texto-suave);
+}
+
+/* Texto que anuncia el resultado («Simulación calculada: …»). */
+.anuncio {
+  margin-bottom: 0.75rem;
+  font-size: 0.9375rem;
+  color: var(--texto-suave);
+}
+
+.anuncio:empty {
+  display: none;
 }
 
 /* 1024 px: el formulario queda a un lado del resumen; la tabla ocupa todo el ancho. */

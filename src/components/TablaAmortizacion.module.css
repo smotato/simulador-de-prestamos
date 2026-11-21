@@ -1,8 +1,8 @@
 .recuadro {
   max-width: 100%;
   overflow-x: auto;
-  border: 1px solid var(--borde);
-  border-radius: 0.5rem;
+  border: 1px solid var(--borde-suave);
+  border-radius: 0.75rem;
 }
 
 .tabla {
@@ -13,25 +13,34 @@
 }
 
 .tabla caption {
-  padding: 0.5rem 0.75rem;
+  padding: 0.6rem 0.85rem;
   text-align: left;
+  font-size: 0.9375rem;
   color: var(--texto-suave);
 }
 
 .tabla th,
 .tabla td {
-  padding: 0.5rem 0.75rem;
-  border-top: 1px solid var(--borde);
+  padding: 0.6rem 0.85rem;
+  border-top: 1px solid var(--borde-suave);
   text-align: right;
 }
 
 .tabla thead th {
-  background: var(--fondo-campo);
+  font-size: 0.875rem;
+  background: var(--superficie-2);
+  border-top: 0;
+  border-bottom: 2px solid var(--borde-suave);
+}
+
+/* Filas alternadas: se leen mejor los renglones largos. */
+.tabla tbody tr:nth-child(even) {
+  background: var(--superficie-2);
 }
 
 /* El número de cuota es el encabezado de la fila, pero se ve igual que los números. */
 .tabla tbody th {
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .paginacion {
@@ -39,24 +48,28 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem;
-  margin-top: 0.75rem;
+  margin-top: 1rem;
 }
 
 .paginacion button {
   min-height: 2.75rem;
   padding: 0.5rem 1rem;
   font: inherit;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--texto-boton);
   background: var(--acento);
   border: 2px solid transparent;
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
   cursor: pointer;
+}
+
+.paginacion button:hover:not(:disabled) {
+  background: var(--acento-hover);
 }
 
 .paginacion button:disabled {
   color: var(--texto-suave);
   background: transparent;
-  border: 1px solid var(--borde);
+  border: 2px solid var(--borde-suave);
   cursor: not-allowed;
 }

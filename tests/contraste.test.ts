@@ -63,17 +63,31 @@ function contraste(a: string, b: string): number {
 
 /** [color del primer plano, color del fondo, mínimo exigido, dónde se usa] */
 const PARES: [string, string, number, string][] = [
+  // Texto sobre cada capa de color (página, tarjeta, detalle, campo, destacado).
   ["texto", "fondo", 4.5, "texto general"],
+  ["texto", "superficie", 4.5, "texto en tarjetas"],
+  ["texto", "superficie-2", 4.5, "filas alternadas de la tabla"],
   ["texto", "fondo-campo", 4.5, "texto escrito en los campos"],
-  ["texto-suave", "fondo", 4.5, "ayudas, fechas y botones deshabilitados"],
-  ["texto-suave", "fondo-campo", 4.5, "encabezados de tabla"],
-  ["acento", "fondo", 4.5, "enlaces y botones con borde"],
+  ["texto", "acento-fondo", 4.5, "cifra destacada, página actual del menú, etiquetas"],
+  ["texto-suave", "fondo", 4.5, "introducción de cada página"],
+  ["texto-suave", "superficie", 4.5, "ayudas, fechas y botones deshabilitados"],
+  ["texto-suave", "superficie-2", 4.5, "encabezados de tabla y datos del resumen"],
+  ["texto-suave", "fondo-campo", 4.5, "texto de ayuda junto a los campos"],
+  ["texto-suave", "acento-fondo", 4.5, "título del dato destacado"],
+  // Colores de acción.
+  ["acento", "fondo", 4.5, "enlaces sobre la página"],
+  ["acento", "superficie", 4.5, "enlaces y botones con borde dentro de tarjetas"],
+  ["acento", "acento-fondo", 4.5, "borde y texto sobre el fondo del acento"],
   ["texto-boton", "acento", 4.5, "texto de los botones"],
   ["texto-boton", "acento-hover", 4.5, "botones al pasar el cursor"],
   ["error", "fondo", 4.5, "mensajes de error"],
-  ["borde", "fondo", 3, "borde de campos y tablas"],
+  ["error", "superficie", 4.5, "errores dentro de tarjetas"],
+  // Elementos que no son texto: bordes de controles e indicador de foco (≥ 3:1).
+  ["borde", "fondo", 3, "borde de controles sobre la página"],
+  ["borde", "superficie", 3, "borde de campos dentro de tarjetas"],
   ["borde", "fondo-campo", 3, "borde de los campos"],
-  ["acento", "fondo", 3, "indicador de foco"],
+  ["acento", "fondo", 3, "indicador de foco sobre la página"],
+  ["acento", "superficie", 3, "indicador de foco dentro de tarjetas"],
 ];
 
 /** En alto contraste el texto debe llegar a AAA (7:1) y los bordes a 4,5:1. */
@@ -83,9 +97,9 @@ function minimoPara(paleta: string, minimo: number): number {
 }
 
 describe.each(Object.entries(PALETAS))("contraste · %s", (nombre, colores) => {
-  it("define los 9 colores", () => {
+  it("define los mismos colores que la paleta base (y no menos de 12)", () => {
     expect(Object.keys(colores).sort()).toEqual(Object.keys(base).sort());
-    expect(Object.keys(colores)).toHaveLength(9);
+    expect(Object.keys(colores).length).toBeGreaterThanOrEqual(12);
   });
 
   it.each(PARES)("%s sobre %s ≥ %s:1 (%s)", (primerPlano, fondo, minimo) => {

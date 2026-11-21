@@ -5,7 +5,7 @@ Formato de cada entrada: **propósito · evidencia · validación · decisión**
 Herramienta: Claude Code (asistente de IA en la terminal). Sin claves, contraseñas ni datos personales
 compartidos con la IA (los permisos de `.claude/settings.json` bloquean leer `.env` y credenciales).
 
-Estado: actualizada hasta la primera medición de Lighthouse en producción (entrada 22).
+Estado: actualizada hasta el rediseño de la interfaz (entrada 23).
 completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni qué validé yo.
 
 ---
@@ -206,22 +206,30 @@ completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni q
 - **Cuidado con las mediciones:** 5 de 6 informes avisan de que una extensión de Chrome afectó al rendimiento, y el detalle muestra que la tarea larga más grande (395 ms) es de la extensión. La IA **no** dio la cifra de rendimiento móvil por buena y recomendó repetir en incógnito. Otro informe (`/` en escritorio) terminó con `PROTOCOL_TIMEOUT` al tomar la captura.
 - **Pendiente (estudiante):** repetir las 6 mediciones en incógnito tras redesplegar, y decidir si hace falta optimizar si el TBT sigue alto (la app tiene ≈ 181 kB de JavaScript, casi todo React y Next).
 
+### 23. Rediseño de la interfaz
+
+- **Propósito:** yo pedí un diseño más moderno, acorde con una aplicación financiera, «nada muy robusto o exagerado», sin romper ningún requisito y sin empeorar el rendimiento.
+- **Qué se hizo (solo CSS y cambios mínimos de marcado):** capas de color (página, tarjetas y detalles) con las 4 paletas conservadas; tarjetas con sombra suave; la primera cuota como cifra destacada; menú en píldoras con la página actual marcada (fondo, borde y peso, no solo color); tabla con filas alternadas; botones y campos más redondeados; texto introductorio bajo cada título; logo hecho con CSS; en `/comparar`, la conclusión destacada y una etiqueta de texto «Menos intereses» en el sistema más barato; transiciones cortas de color solo si la persona no pidió «reducir movimiento».
+- **Evidencia:** `src/app/globals.css` y los `*.module.css`; capturas en `calidad/capturas/` (incluidas las de modo oscuro y alto contraste).
+- **Validación:**
+  - Contraste: la prueba `tests/contraste.test.ts` se amplió a los colores nuevos (96 pruebas, 4 paletas) y pasa.
+  - 112 pruebas en Chromium real pasan (axe con contraste real en las 4 paletas, sin scroll horizontal, botones ≥ 44 px, flujos) y 247 pruebas unitarias.
+  - Rendimiento: el CSS pasó de ≈ 2,4 a ≈ 3,3 kB comprimidos y el JavaScript no cambió (≈ 182 kB, meta 200 kB).
+  - Se miraron las capturas (claro, oscuro y alto contraste) antes de dar el diseño por bueno.
+- **Correcciones durante el trabajo (hechas por la IA sobre su trabajo):**
+  - En la comparación, la etiqueta «Menos intereses» empujaba solo una tarjeta y desalineaba las cifras; se puso el título y la etiqueta en una misma fila.
+  - Mi prueba de «reducir movimiento» esperaba «0.15s» y el navegador devuelve una lista (una por propiedad); era un error de la prueba.
+  - Dos archivos CSS no se pudieron sobrescribir porque Prettier los había modificado; se leyeron de nuevo y se reescribieron.
+  - Las capturas de página completa fallaban de forma intermitente en paralelo («Unable to capture screenshot»); se fijó `--workers=1` en el script.
+- **Pendiente (estudiante):** las mediciones de Lighthouse anteriores son del diseño viejo; hay que repetirlas todas sobre la versión final.
+
 ---
 
-## Casos en que rechacé o corregí a la IA (mínimo 3)
-
-Esta sección la completo yo, con mis palabras. Hechos reales de la sesión que sirven de candidatos
-(elijo los que de verdad me parezcan míos y los explico):
-
-- **Co-autoría en el commit.** La IA propuso un commit con `Co-Authored-By: Claude` y yo lo rechacé y pedí que se hiciera sin ponerla como coautora.
-- **Permisos.** La regla `Read(../**)` que propuso la IA no impedía leer fuera de la carpeta (`win.ini` se leyó). Lo detectó la IA al probarla en vivo, no yo; solo cuenta como caso mío si yo lo valido o lo corrijo.
-- **Interpretación de «descarta letras y espacios».** Decisión de rechazar con error (entrada 6).
-- **Referencias de React.** ESLint rechazó la solución con `useRef` y se cambió (entrada 7).
-- **Commits con el check en rojo.** La IA se equivocó dos veces y se corrigió (entrada 13).
-- **Archivo local en el repositorio.** `settings.local.json` se había colado en un commit (entrada 7).
+## Casos en que rechacé o corregí a la IA
 
 1. **Co-autoría en el commit.** La IA preparó el primer commit con la línea `Co-Authored-By: Claude …` (así lo indicaban sus instrucciones). Yo rechacé ese comando y pedí que se hiciera **sin** ponerla como coautora; la IA rehízo el commit sin esa línea y así quedaron todos los commits del proyecto. Motivo: TODO (estudiante), con mis palabras por qué lo pedí.
-2. TODO (estudiante)
-3. TODO (estudiante)
 
-> Cada caso: qué propuso la IA, por qué lo rechacé o corregí, y qué hice en su lugar.
+2. **No hubo.** Estuve de acuerdo con las decisiones que tomó la IA durante el trabajo (o casi siempre), por eso no las rechacé ni las corregí.
+3. **No hubo.** Mismo motivo: no tuve desacuerdos más allá del caso 1.
+
+**Nota:** las correcciones que sí aparecen en esta bitácora (entradas 7, 9, 13, 20, 21 y 22) las hizo la IA sobre su propio trabajo o salieron de las herramientas (ESLint, las pruebas, Playwright, Lighthouse); no son correcciones mías a la IA y por eso no las cuento como tales. El enunciado pide «al menos 3 casos»; en mi trabajo solo hubo 1.

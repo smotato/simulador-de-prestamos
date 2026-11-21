@@ -10,6 +10,9 @@ export default function PaginaHistorial() {
   return (
     <>
       <h1>Historial de simulaciones</h1>
+      <p className="intro">
+        Se guardan solo en este navegador: nadie más puede verlas y puedes borrarlas cuando quieras.
+      </p>
       <Historial />
     </>
   );

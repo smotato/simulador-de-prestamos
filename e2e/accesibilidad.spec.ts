@@ -49,6 +49,23 @@ test("el color-scheme del navegador sigue al tema", async ({ page }) => {
   await page.emulateMedia({ colorScheme: "light" });
   const fondoClaro = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
 
-  expect(fondoOscuro).toBe("rgb(18, 18, 18)");
-  expect(fondoClaro).toBe("rgb(255, 255, 255)");
+  expect(fondoOscuro).toBe("rgb(13, 16, 32)");
+  expect(fondoClaro).toBe("rgb(244, 246, 251)");
+});
+
+test("las transiciones se apagan con «reducir movimiento» y existen sin esa preferencia", async ({
+  page,
+}) => {
+  const duracion = () =>
+    page
+      .getByRole("button", { name: "Simular" })
+      .evaluate((el) => getComputedStyle(el).transitionDuration);
+
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await abrir(page, RUTAS[0]);
+  // Son tres propiedades (fondo, borde y color): el navegador las devuelve separadas por comas.
+  expect((await duracion()).split(", ")).toEqual(["0.15s", "0.15s", "0.15s"]);
+
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  expect((await duracion()).split(", ").every((d) => d === "0s")).toBe(true);
 });

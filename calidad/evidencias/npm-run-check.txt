@@ -28,11 +28,11 @@ All matched files use Prettier code style!
 
 
  Test Files  22 passed (22)
-      Tests  203 passed (203)
-   Start at  16:38:10
-   Duration  13.89s (environment 68%, setup 19%, tests 7%, import 3%, worker 2%)
+      Tests  247 passed (247)
+   Start at  18:45:22
+   Duration  15.99s (environment 68%, setup 19%, tests 8%, import 3%, worker 2%, transform 1%)
 
-Environment  jsdom was created 22 times · 88.78s total, 68% of tracked time
+Environment  jsdom was created 22 times · 99.68s total, 68% of tracked time
              create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
              learn more: https://vitest.dev/guide/improving-performance#test-environments
 

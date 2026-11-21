@@ -1,18 +1,32 @@
 .contenedor {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 1.5rem;
+  gap: 1.25rem;
+}
+
+.tarjeta {
+  padding: clamp(1rem, 3vw, 1.5rem);
+  background: var(--superficie);
+  border: 1px solid var(--borde-suave);
+  border-radius: 1rem;
+  box-shadow: var(--sombra);
 }
 
 .contenedor h2 {
-  margin-block: 0 0.75rem;
+  margin: 0 0 1rem;
   font-size: 1.25rem;
+  letter-spacing: -0.01em;
 }
 
+/* La conclusión de la comparación, destacada. */
 .frase {
   margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
   font-size: 1.125rem;
   font-weight: 700;
+  background: var(--acento-fondo);
+  border-left: 4px solid var(--acento);
+  border-radius: 0.5rem;
 }
 
 .frase:empty {
@@ -33,13 +47,34 @@
 
 .sistema {
   padding: 1rem;
-  border: 1px solid var(--borde);
-  border-radius: 0.5rem;
+  border: 1px solid var(--borde-suave);
+  border-radius: 0.75rem;
+}
+
+.cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  min-height: 2rem;
+  margin-bottom: 0.5rem;
 }
 
 .sistema h3 {
-  margin: 0 0 0.5rem;
+  margin: 0;
   font-size: 1.125rem;
+}
+
+/* Etiqueta de texto (no solo color) para el sistema que paga menos intereses. */
+.etiqueta {
+  display: inline-block;
+  margin: 0;
+  padding: 0.1rem 0.65rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  background: var(--acento-fondo);
+  border: 1px solid var(--acento);
+  border-radius: 999px;
 }
 
 .sistema a {
@@ -47,7 +82,6 @@
   align-items: center;
   min-height: 2.75rem;
   margin-top: 0.75rem;
-  color: var(--acento);
   font-weight: 600;
 }
 

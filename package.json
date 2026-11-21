@@ -14,7 +14,7 @@
     "test:coverage": "vitest run --coverage",
     "check": "npm run typecheck && npm run lint && npm run format:check && npm run test:coverage",
     "test:e2e": "npm run build && playwright test --project=chromium",
-    "e2e:capturas": "npm run build && playwright test --project=capturas"
+    "e2e:capturas": "npm run build && playwright test --project=capturas --workers=1"
   },
   "dependencies": {
     "next": "16.4.6",
