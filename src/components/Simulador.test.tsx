@@ -22,9 +22,7 @@ describe("Simulador", () => {
   it("con un enlace válido calcula sola y anuncia la cuota", () => {
     abrir("monto=10000000&tasa=12&plazo=12&sistema=frances");
 
-    expect(screen.getByRole("status")).toHaveTextContent(
-      /simulación calculada: cuota de .*885\.621/i,
-    );
+    expect(screen.getByText(/simulación calculada/i)).toHaveTextContent(/cuota de .*885[.]621/i);
     expect(screen.getByText("Total de intereses").nextSibling).toHaveTextContent("627.448");
     expect(screen.getByText("Total pagado").nextSibling).toHaveTextContent("10.627.448");
     expect(screen.getByRole("table")).toBeInTheDocument();
@@ -33,7 +31,9 @@ describe("Simulador", () => {
 
   it("con el sistema alemán anuncia la primera cuota", () => {
     abrir("monto=10000000&tasa=12&plazo=12&sistema=aleman");
-    expect(screen.getByRole("status")).toHaveTextContent(/primera cuota de .*928\.221/i);
+    expect(screen.getByText(/simulación calculada/i)).toHaveTextContent(
+      /primera cuota de .*928[.]221/i,
+    );
     expect(screen.getByText("Total de intereses").nextSibling).toHaveTextContent("616.772");
   });
 

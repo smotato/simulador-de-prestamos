@@ -7,6 +7,7 @@ import { pesos } from "@/lib/formato";
 import { validar } from "@/lib/validar";
 import { desdeParams, tieneDatos } from "@/lib/url";
 import { Formulario } from "./Formulario";
+import { Acciones } from "./Acciones";
 import { Resumen } from "./Resumen";
 import { TablaAmortizacion } from "./TablaAmortizacion";
 import styles from "./Simulador.module.css";
@@ -44,7 +45,10 @@ export function Simulador() {
           {anuncio}
         </div>
         {simulacion ? (
-          <Resumen resumen={simulacion.resumen} sistema={valor!.sistema} />
+          <>
+            <Resumen resumen={simulacion.resumen} sistema={valor!.sistema} />
+            <Acciones filas={simulacion.filas} sistema={valor!.sistema} />
+          </>
         ) : (
           <p className={styles.vacio}>Aquí verá la cuota, el total pagado y los intereses.</p>
         )}
