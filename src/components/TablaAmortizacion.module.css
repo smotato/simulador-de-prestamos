@@ -1,0 +1,62 @@
+.recuadro {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--borde);
+  border-radius: 0.5rem;
+}
+
+.tabla {
+  width: 100%;
+  min-width: 36rem;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.tabla caption {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  color: var(--texto-suave);
+}
+
+.tabla th,
+.tabla td {
+  padding: 0.5rem 0.75rem;
+  border-top: 1px solid var(--borde);
+  text-align: right;
+}
+
+.tabla thead th {
+  background: var(--fondo-campo);
+}
+
+/* El número de cuota es el encabezado de la fila, pero se ve igual que los números. */
+.tabla tbody th {
+  font-weight: 600;
+}
+
+.paginacion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.paginacion button {
+  min-height: 2.75rem;
+  padding: 0.5rem 1rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--texto-boton);
+  background: var(--acento);
+  border: 0;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
+
+.paginacion button:disabled {
+  color: var(--texto-suave);
+  background: transparent;
+  border: 1px solid var(--borde);
+  cursor: not-allowed;
+}
