@@ -5,7 +5,7 @@ Formato de cada entrada: **propósito · evidencia · validación · decisión**
 Herramienta: Claude Code (asistente de IA en la terminal). Sin claves, contraseñas ni datos personales
 compartidos con la IA (los permisos de `.claude/settings.json` bloquean leer `.env` y credenciales).
 
-Estado: actualizada hasta el commit `b6138c6` (20 commits). Lo marcado **TODO (estudiante)** lo debo
+Estado: actualizada hasta el commit `63e364f` (22 commits). Lo marcado **TODO (estudiante)** lo debo
 completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni qué validé yo.
 
 ---
@@ -166,6 +166,25 @@ completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni q
 - **Resultado (gzip, aprox.):** JavaScript ≈ 182 kB en `/`, 181 kB en `/comparar` y 180 kB en `/historial` → **cumple** por poco margen (≈ 18 kB). Los tres trozos más grandes (70 + 44 + 39 kB) son React y Next; el código propio es una parte pequeña. HTML ≈ 3 kB, CSS ≈ 2 kB y una fuente de 29 kB.
 - **Corrección:** el script contaba la fuente como 0 kB por un error de expresión regular; se midió a mano el archivo (29 kB).
 - **Límite:** son números de laboratorio sobre la compilación local. Hay que repetir la medición con DevTools → Red (sin caché) sobre la URL de Vercel. Vercel además sirve con Brotli, que suele ser menor que gzip.
+
+### 19. Reto: modo oscuro y alto contraste · `c35045c`
+
+- **Propósito:** reto de excelencia «modo oscuro y alto contraste sin romper el contraste en ningún tema».
+- **Evidencia:** `src/app/globals.css` (4 paletas: clara, oscura, clara + `prefers-contrast: more`, oscura + alto contraste; `color-scheme`; `forced-colors`) y `tests/contraste.test.ts` (52 pruebas).
+- **Validación:** la prueba lee las 4 paletas del CSS en el mismo orden de la cascada y exige texto ≥ 4,5:1 (≥ 7:1 en alto contraste) y bordes/foco ≥ 3:1 (≥ 4,5:1 en alto contraste). Para comprobar que no es un falso verde, se degradó a propósito un color (`#1f1f1f` → `#777777`): la prueba falló con «4.48:1, se exige 7:1» y volvió a pasar al restaurarlo.
+- **Decisiones:** los botones pasan de `border: 0` a `border: 2px solid transparent` para que en el modo de colores forzados de Windows conserven un borde visible; la página actual del menú se marca además con subrayado en ese modo.
+
+### 20. Reto: Playwright en 3 anchos + axe · `63e364f`
+
+- **Propósito:** reto «prueba en 3 anchos con Playwright (360/768/1024): sin scroll horizontal y 0 violaciones de axe».
+- **Evidencia:** `playwright.config.ts`, `e2e/*.spec.ts` (111 pruebas, `npm run test:e2e`), capturas reales en `calidad/capturas/` (`npm run e2e:capturas`). Corren sobre la compilación de producción en Chromium.
+- **Qué comprueban:** sin scroll horizontal en 320, 360, 640, 768 y 1024 px en 7 páginas; la tabla se desplaza dentro de su recuadro a 360 px; objetivos táctiles ≥ 44 px; axe completo (incluido el **contraste real**, que jsdom no puede medir) en las 4 paletas y 2 anchos; teclado («Saltar al contenido», foco visible); descarga real del CSV (BOM y `;`); portapapeles; enlace copiado en otra pestaña; historial; título único y un solo h1 por página.
+- **Validación de la validación:** se degradó un color (`--texto-suave` a `#bbbbbb`) y axe falló con `color-contrast (serious)`; se restauró.
+- **Hallazgos reales (cosas que las pruebas con jsdom no veían):**
+  1. **A 1024 px el formulario se salía de su columna** y se montaba sobre el resumen (los campos de texto no se encogían por debajo de su ancho natural en una cuadrícula de `1fr`). Se detectó mirando las capturas; antes de corregir se escribió una prueba que lo reproducía (falló) y se arregló con `minmax(0, 1fr)`, `width: 100%` y `min-width: 0`.
+  2. **Dos regiones casi iguales** («Tabla de amortización» en la `<section>` y en el recuadro desplazable). Se quitó el nombre de la `<section>`; el recuadro (el que pide el enunciado) conserva `role="region"` y `aria-label`.
+- **Errores míos/de la IA:** un comentario JSX en un lugar inválido rompió la compilación; una prueba contaba los `<li>` del menú junto con los del historial.
+- **Límites:** solo Chromium (no Firefox ni Safari), emulación de preferencias (no un lector de pantalla real, no un teléfono real). TODO (estudiante): mirar las capturas y probar en un teléfono.
 
 ---
 
