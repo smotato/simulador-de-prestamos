@@ -3,21 +3,15 @@
 import { useMemo } from "react";
 import Link from "next/link";
 import { comparar, frase } from "@/lib/comparar";
-import { aParams, desdeParams, tieneDatos } from "@/lib/url";
-import { validar } from "@/lib/validar";
-import { useSearchParams } from "next/navigation";
+import { useSimulacion } from "@/hooks/useSimulacion";
+import { aParams } from "@/lib/url";
 import { Formulario } from "./Formulario";
 import { Resumen } from "./Resumen";
 import styles from "./Comparador.module.css";
 
 export function Comparador() {
-  const params = useSearchParams();
-  const clave = params.toString();
-  const texto = useMemo(() => desdeParams(params), [params]);
-  const hayDatos = tieneDatos(texto);
-
   // Aquí se calculan los dos sistemas, así que el sistema de la URL no importa.
-  const { valor, errores } = useMemo(() => validar({ ...texto, sistema: "frances" }), [texto]);
+  const { texto, hayDatos, valor, errores, clave } = useSimulacion({ sistema: "frances" });
   const comparacion = useMemo(() => (valor ? comparar(valor) : null), [valor]);
 
   return (

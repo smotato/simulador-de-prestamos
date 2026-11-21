@@ -33,6 +33,7 @@ Antes de decir que algo está terminado, corre `npm run check` y muéstrame el r
 - `src/lib/formato.ts`: `pesos()` y `porcentaje()` con `Intl`
 - `src/app/`: rutas `/`, `/comparar`, `/historial`
 - `src/components/`: componentes de interfaz
+- `src/hooks/`: hooks propios (`useSimulacion`: lee y valida la simulación de la URL)
 - `tests/`: pruebas
 - `ia/`: pruebas de contención y `BITACORA.md`
 - `calidad/` y `CALIDAD.md`: evidencias de calidad
