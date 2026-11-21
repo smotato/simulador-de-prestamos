@@ -1,0 +1,56 @@
+# npm run check · 2026-11-21 · Node v22.14.0
+
+
+> simulador-de-prestamos@0.1.0 check
+> npm run typecheck && npm run lint && npm run format:check && npm run test:coverage
+
+
+> simulador-de-prestamos@0.1.0 typecheck
+> tsc --noEmit
+
+
+> simulador-de-prestamos@0.1.0 lint
+> eslint --max-warnings=0
+
+
+> simulador-de-prestamos@0.1.0 format:check
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> simulador-de-prestamos@0.1.0 test:coverage
+> vitest run --coverage
+
+
+ RUN  v5.1.1 C:/Users/stive/OneDrive/Documentos/simulador-de-prestamos
+      Coverage enabled with v8
+
+
+ Test Files  22 passed (22)
+      Tests  203 passed (203)
+   Start at  16:38:10
+   Duration  13.89s (environment 68%, setup 19%, tests 7%, import 3%, worker 2%)
+
+Environment  jsdom was created 22 times · 88.78s total, 68% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+
+ % Coverage report from v8
+--------------|---------|----------|---------|---------|-------------------
+File          | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+--------------|---------|----------|---------|---------|-------------------
+All files     |   99.35 |     98.3 |     100 |   99.28 |                   
+ comparar.ts  |     100 |    83.33 |     100 |     100 | 25                
+ historial.ts |   98.03 |      100 |     100 |   97.61 | 22                
+ webvitals.ts |     100 |    92.85 |     100 |     100 | 53                
+--------------|---------|----------|---------|---------|-------------------
+
+=============================== Coverage summary ===============================
+Statements   : 99.35% ( 154/155 )
+Branches     : 98.3% ( 116/118 )
+Functions    : 100% ( 31/31 )
+Lines        : 99.28% ( 139/140 )
+================================================================================
+
+código de salida: 0

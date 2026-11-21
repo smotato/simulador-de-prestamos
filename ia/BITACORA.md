@@ -5,7 +5,7 @@ Formato de cada entrada: **propósito · evidencia · validación · decisión**
 Herramienta: Claude Code (asistente de IA en la terminal). Sin claves, contraseñas ni datos personales
 compartidos con la IA (los permisos de `.claude/settings.json` bloquean leer `.env` y credenciales).
 
-Estado: actualizada hasta el commit `63e364f` (22 commits). Lo marcado **TODO (estudiante)** lo debo
+Estado: actualizada hasta el commit `e8007a6` (23 commits) más el de README y CALIDAD. Lo marcado **TODO (estudiante)** lo debo
 completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni qué validé yo.
 
 ---
@@ -185,6 +185,17 @@ completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni q
   2. **Dos regiones casi iguales** («Tabla de amortización» en la `<section>` y en el recuadro desplazable). Se quitó el nombre de la `<section>`; el recuadro (el que pide el enunciado) conserva `role="region"` y `aria-label`.
 - **Errores míos/de la IA:** un comentario JSX en un lugar inválido rompió la compilación; una prueba contaba los `<li>` del menú junto con los del historial.
 - **Límites:** solo Chromium (no Firefox ni Safari), emulación de preferencias (no un lector de pantalla real, no un teléfono real). TODO (estudiante): mirar las capturas y probar en un teléfono.
+
+### 21. README y CALIDAD.md
+
+- **Propósito:** entregables de la sección 9.2 (instrucciones y evidencias de calidad).
+- **Evidencia:** `README.md`, `CALIDAD.md`, `calidad/evidencias/npm-run-check.txt`, `calidad/evidencias/e2e-playwright.txt` y `calidad/capturas/`.
+- **Validación:** antes de escribir las cifras en `CALIDAD.md` se volvieron a medir (cobertura 99,35 %, 203 pruebas, 111 pruebas del navegador) y se contaron las pruebas citadas (35 de scroll horizontal, 56 de axe, 9 de axe en Vitest, 14 del historial). Se comprobó que no hay animaciones antes de afirmar que `prefers-reduced-motion` no aplica.
+- **Honestidad del documento:** lo medido va marcado ✅ con fecha y cómo reproducirlo; lo que depende de Vercel, Lighthouse, un lector de pantalla o un teléfono real va marcado ⏳ con los pasos exactos y `TODO`. Nada se inventó. TODO (estudiante): completar los ⏳ y pegar la URL de producción.
+- **Correcciones durante el trabajo:**
+  - El `README.md` original estaba guardado en **UTF-16** (lo creó una herramienta de Windows) y las herramientas de la IA se negaron a editarlo; se eliminó y se recreó en UTF-8.
+  - `npm run check` falló porque el `README.md` nuevo no cumplía el formato de Prettier; se formateó.
+  - El primer registro de `npm run check` mostraba «exit code: 0» aunque el check había fallado (leía el código de `echo`, no el del comando). Se corrigió y se volvió a generar el registro.
 
 ---
 
