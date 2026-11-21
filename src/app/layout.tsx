@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Navegacion } from "@/components/Navegacion";
+import { WebVitals } from "@/components/WebVitals";
 import { urlSitio } from "@/lib/sitio";
 import "./globals.css";
 import styles from "./layout.module.css";
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="es" className={geistSans.variable}>
       <body>
+        <WebVitals />
         <a href="#contenido" className={styles.saltar}>
           Saltar al contenido
         </a>
