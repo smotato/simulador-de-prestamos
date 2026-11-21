@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { amortizar } from "@/lib/prestamo";
 import { pesos } from "@/lib/formato";
+import { guardarSimulacion } from "@/lib/historial";
 import { validar } from "@/lib/validar";
 import { desdeParams, tieneDatos } from "@/lib/url";
 import { Formulario } from "./Formulario";
@@ -21,6 +22,11 @@ export function Simulador() {
 
   // Estado derivado: la tabla se calcula a partir de la URL, no se guarda en un estado aparte.
   const simulacion = useMemo(() => (valor ? amortizar(valor) : null), [valor]);
+
+  // Cada simulación calculada se guarda en el historial (efecto: escribe fuera de React).
+  useEffect(() => {
+    if (valor) guardarSimulacion(valor);
+  }, [valor]);
 
   const anuncio =
     valor && simulacion

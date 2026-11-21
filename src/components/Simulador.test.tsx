@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { CLAVE, interpretar } from "@/lib/historial";
 import { Simulador } from "./Simulador";
 
 let consulta = "";
@@ -11,6 +12,8 @@ function abrir(url: string) {
   consulta = url;
   return render(<Simulador />);
 }
+
+beforeEach(() => window.localStorage.clear());
 
 describe("Simulador", () => {
   it("sin datos muestra ayuda y ninguna tabla", () => {
@@ -49,5 +52,17 @@ describe("Simulador", () => {
     expect(screen.getByLabelText(/monto del préstamo/i)).toHaveValue("abc");
     expect(screen.queryByRole("table")).not.toBeInTheDocument();
     expect(screen.getByRole("status")).toBeEmptyDOMElement();
+  });
+
+  it("guarda la simulación calculada en el historial", () => {
+    abrir("monto=10000000&tasa=12&plazo=12&sistema=frances");
+    const guardado = interpretar(window.localStorage.getItem(CLAVE));
+    expect(guardado).toHaveLength(1);
+    expect(guardado[0]).toMatchObject({ monto: 10_000_000, ea: 12, plazo: 12, sistema: "frances" });
+  });
+
+  it("no guarda nada si la URL es inválida o está vacía", () => {
+    abrir("monto=abc");
+    expect(window.localStorage.getItem(CLAVE)).toBeNull();
   });
 });
