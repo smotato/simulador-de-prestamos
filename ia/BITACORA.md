@@ -220,7 +220,7 @@ Esta sección la completo yo, con mis palabras. Hechos reales de la sesión que 
 - **Commits con el check en rojo.** La IA se equivocó dos veces y se corrigió (entrada 13).
 - **Archivo local en el repositorio.** `settings.local.json` se había colado en un commit (entrada 7).
 
-1. TODO (estudiante)
+1. **Co-autoría en el commit.** La IA preparó el primer commit con la línea `Co-Authored-By: Claude …` (así lo indicaban sus instrucciones). Yo rechacé ese comando y pedí que se hiciera **sin** ponerla como coautora; la IA rehízo el commit sin esa línea y así quedaron todos los commits del proyecto. Motivo: TODO (estudiante), con mis palabras por qué lo pedí.
 2. TODO (estudiante)
 3. TODO (estudiante)
 
