@@ -1,0 +1,27 @@
+.contenedor {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+}
+
+.contenedor h2 {
+  margin-block: 0 0.75rem;
+  font-size: 1.25rem;
+}
+
+.vacio {
+  margin: 0;
+  color: var(--texto-suave);
+}
+
+/* 1024 px: el formulario queda a un lado del resumen; la tabla ocupa todo el ancho. */
+@media (min-width: 64rem) {
+  .contenedor {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .tabla {
+    grid-column: 1 / -1;
+  }
+}
