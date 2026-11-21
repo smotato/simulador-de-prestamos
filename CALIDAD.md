@@ -31,41 +31,46 @@ Taller R4 · Simulador de préstamos. Este documento reúne las evidencias de la
 
 ## 2. Lighthouse
 
-Primera medición hecha el **2026-11-21** sobre la dirección de producción, con Lighthouse 13.5.0 desde DevTools (throttling simulado, modo Navegación). Informes en `calidad/lighthouse/`.
+Medido el **2026-11-21** sobre la dirección de producción **con el diseño final** (los informes traen los textos nuevos de cada página), con Lighthouse 13.5.0 desde DevTools (throttling simulado, modo Navegación). Informes en `calidad/lighthouse/`.
 
-> 🔄 **Estas mediciones son del diseño anterior.** Después se rediseñó la interfaz (solo CSS, sin cambiar el JavaScript), así que hay que repetirlas todas sobre la versión final (pasos abajo).
+| Página       | Perfil     | Rendimiento | Accesibilidad | Buenas prácticas | SEO | Informe                     |
+| ------------ | ---------- | ----------- | ------------- | ---------------- | --- | --------------------------- |
+| `/`          | Móvil      | **99**      | 100           | 100              | 100 | `home-mobile.html`          |
+| `/`          | Escritorio | 99          | 100           | 96               | 100 | `home-desktop.html` (*)     |
+| `/comparar`  | Móvil      | **97**      | 100           | 100              | 100 | `comparar-mobile.html`      |
+| `/comparar`  | Escritorio | 100         | 100           | 100              | 100 | `comparar-desktop.html`     |
+| `/historial` | Móvil      | **99**      | 100           | 100              | 100 | `simular-mobile.html` (**)  |
+| `/historial` | Escritorio | 100         | 100           | 100              | 100 | `simular-desktop.html` (**) |
 
-> ⚠️ **Medición provisional.** Cinco de los seis informes traen el aviso «las extensiones de Chrome afectaron al rendimiento» y el de `/` en escritorio terminó con un error al tomar la captura (`PROTOCOL_TIMEOUT`). Hay que **repetirla en una ventana de incógnito sin extensiones** (pasos abajo).
+Todas las metas se cumplen (móvil: rendimiento ≥ 90; accesibilidad, buenas prácticas y SEO ≥ 95).
 
-| Página       | Perfil     | Rendimiento | Accesibilidad | Buenas prácticas | SEO                   | Informe                                    |
-| ------------ | ---------- | ----------- | ------------- | ---------------- | --------------------- | ------------------------------------------ |
-| `/`          | Móvil      | **87** ⚠️   | 100           | 96               | 100                   | `home-mobile.html`                         |
-| `/`          | Escritorio | 100         | 100           | 96               | 100                   | `home-desktop.html` (con error de captura) |
-| `/comparar`  | Móvil      | **88** ⚠️   | 100           | 96               | 100                   | `comparar-mobile.html`                     |
-| `/comparar`  | Escritorio | 100         | 100           | 96               | 100                   | `comparar-desktop.html`                    |
-| `/historial` | Móvil      | **83** ⚠️   | 100           | 96               | **63** ⚠️ → corregido | `simular-mobile.html`                      |
-| `/historial` | Escritorio | 99          | 100           | 96               | **63** ⚠️ → corregido | `simular-desktop.html`                     |
+(*) `home-desktop.html` es una medición anterior a las demás y todavía tenía una extensión de Chrome activa (el informe lo muestra): por eso buenas prácticas marca 96 por una auditoría de «Issues» y no 100 como las otras cinco. Igual cumple la meta; conviene repetirla en incógnito para que quede igual que el resto.
 
-> Los archivos `simular-*.html` son en realidad de `/historial` (lo dice su URL); se les cambiará el nombre al repetir la medición.
+(**) Los archivos `simular-*.html` son de `/historial` (lo dice su URL), no del simulador.
+
+### Métricas de laboratorio de cada informe
+
+| Página       | Perfil     | FCP   | LCP   | TBT    | CLS   | Speed Index |
+| ------------ | ---------- | ----- | ----- | ------ | ----- | ----------- |
+| `/`          | Móvil      | 1,1 s | 1,1 s | 130 ms | 0     | 1,3 s       |
+| `/`          | Escritorio | 0,4 s | 0,4 s | 100 ms | 0,043 | 0,6 s       |
+| `/comparar`  | Móvil      | 1,0 s | 1,2 s | 200 ms | 0     | 1,6 s       |
+| `/comparar`  | Escritorio | 0,5 s | 0,6 s | 0 ms   | 0,043 | 0,8 s       |
+| `/historial` | Móvil      | 1,1 s | 1,1 s | 100 ms | 0     | 1,4 s       |
+| `/historial` | Escritorio | 0,4 s | 0,5 s | 0 ms   | 0,004 | 0,5 s       |
 
 ### Qué dicen los informes
 
-1. **Accesibilidad 100 en las 6 mediciones y SEO 100 en `/` y `/comparar`**: cumplen con holgura. Buenas prácticas 96 cumple (≥ 95).
-2. **Rendimiento móvil 83–88: por debajo de la meta (≥ 90).** La causa principal es el **TBT (460–680 ms)**, y el detalle del informe indica que **la mayor tarea larga (395 ms) y el mayor tiempo de ejecución de JavaScript pertenecen a una extensión de Chrome** (`frame.bundle.js`, `trustedtypes-strip.bundle.js`), no a la aplicación. Las tareas largas propias son de 126 ms y 113 ms. Los demás indicadores sí cumplen: **LCP 1,7–1,9 s** (≤ 2,5 s), **CLS 0** y FCP 0,8–0,9 s. Por eso la cifra de rendimiento móvil no es fiable hasta repetirla sin extensiones.
-3. **SEO 63 en `/historial`: era mío.** La página tenía `noindex` (por ser personal) y la auditoría `is-crawlable` falla. El enunciado exige SEO ≥ 95 en las tres páginas, así que se **quitó el `noindex`** (la página sigue fuera del `sitemap.xml`). Requiere volver a desplegar y medir.
-4. **Buenas prácticas 96, no 100:** la única auditoría que no pasa es «Issues in the Issues panel» (tipo _Content security policy_, sin detalle). Probablemente viene de la misma extensión (_trusted types_); si persiste en incógnito, se investiga.
-5. **Escritorio:** rendimiento 99–100, LCP 0,4 s, CLS 0,004–0,039 (≤ 0,1).
-6. JavaScript sin usar: ≈ 28 kB (39 %) en uno de los trozos de React/Next. No es accionable sin quitar el framework.
+1. **Rendimiento móvil 97–99** (meta ≥ 90): cumple con margen. LCP 1,1–1,2 s (meta ≤ 2,5 s), CLS 0 y TBT 100–200 ms (el valor más alto, 200 ms, es el límite de la meta orientativa de TBT).
+2. **Accesibilidad 100 y SEO 100 en las 6 mediciones.** El SEO de `/historial` ya no marca 63: se quitó el `noindex` y se volvió a desplegar.
+3. **Buenas prácticas 100** en cinco de seis (la excepción es el informe con extensión, ver (*)).
+4. **Sin avisos ni errores en ningún informe.** Cinco no traen extensiones; en la primera medición, con extensiones de Chrome activas, el rendimiento móvil marcaba 83–88 y la tarea larga más grande (395 ms) era de una extensión: confirma que esa cifra no era de la aplicación.
+5. **CLS 0,043 en escritorio** (`/` y `/comparar`): cumple la meta (≤ 0,1) pero no es 0; en móvil sí es 0. No se eligió el reto «CLS = 0».
+6. Las tareas largas propias en móvil son de 57 a 180 ms (4 o 5 por página).
 
-### Cómo repetir la medición (en incógnito)
+### Cómo se obtuvo y cómo repetirlo
 
-1. Abrir una **ventana de incógnito** y comprobar que las extensiones están desactivadas (o usar un perfil de Chrome sin extensiones).
-2. Para cada página: DevTools → **Lighthouse** → modo **Navegación** → marcar las 4 categorías → **Móvil** y luego **Escritorio**.
-3. Guardar cada informe (⋮ → «Guardar como HTML») en `calidad/lighthouse/` con estos nombres: `inicio-movil.html`, `inicio-escritorio.html`, `comparar-movil.html`, `comparar-escritorio.html`, `historial-movil.html`, `historial-escritorio.html`, y borrar los anteriores.
-4. Hacerlo **después de volver a desplegar** (para incluir la corrección de SEO).
-5. También conviene pasar la dirección por [PageSpeed Insights](https://pagespeed.web.dev) y guardar una captura.
-
-Este taller no tiene inicio de sesión, por eso no se pide la página con sesión iniciada. Lighthouse no mide INP: usa TBT como aproximación (ver [§5](#5-core-web-vitals)).
+Ventana de incógnito sin extensiones → DevTools → **Lighthouse** → modo **Navegación** → las 4 categorías → **Móvil** y **Escritorio**, y guardar cada informe (⋮ → «Guardar como HTML») en `calidad/lighthouse/`. Las cifras de esta sección se extrajeron leyendo el JSON que Lighthouse incrusta en cada archivo. Lighthouse no mide INP: usa TBT como aproximación (ver [§5](#5-core-web-vitals)). También conviene pasar la dirección por [PageSpeed Insights](https://pagespeed.web.dev) y guardar una captura.
 
 ## 3. Responsive: 360 · 768 · 1024 px
 
@@ -262,7 +267,7 @@ All files     |   99.35 |     98.3 |     100 |   99.28
 
 ## 10. Lo que no se hizo (límites honestos)
 
-- **Medición en producción incompleta:** ya se confirmaron `robots.txt`, `sitemap.xml` y la 404 con el dominio real (§7), pero Lighthouse, Core Web Vitals, PageSpeed y las cabeceras HTTP siguen pendientes.
+- **Medición en producción incompleta:** Lighthouse ya está hecho (§2) y se confirmaron `robots.txt`, `sitemap.xml` y la 404 (§7), pero siguen pendientes el INP real, PageSpeed Insights, axe DevTools, el validador HTML y las cabeceras HTTP.
 - **No hay `Content-Security-Policy`** (ver [§7](#7-html-semántico-y-buenas-prácticas)).
 - **Sin imagen Open Graph** (solo título, descripción e idioma).
 - **Sin pruebas con lector de pantalla ni teléfono real** (ver [§4](#4-accesibilidad-wcag-22-aa) y [§3](#3-responsive-360--768--1024-px)).

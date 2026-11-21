@@ -5,7 +5,7 @@ Formato de cada entrada: **propósito · evidencia · validación · decisión**
 Herramienta: Claude Code (asistente de IA en la terminal). Sin claves, contraseñas ni datos personales
 compartidos con la IA (los permisos de `.claude/settings.json` bloquean leer `.env` y credenciales).
 
-Estado: actualizada hasta el rediseño de la interfaz (entrada 23).
+Estado: actualizada hasta la segunda medición de Lighthouse (entrada 24).
 completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni qué validé yo.
 
 ---
@@ -222,6 +222,15 @@ completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni q
   - Dos archivos CSS no se pudieron sobrescribir porque Prettier los había modificado; se leyeron de nuevo y se reescribieron.
   - Las capturas de página completa fallaban de forma intermitente en paralelo («Unable to capture screenshot»); se fijó `--workers=1` en el script.
 - **Pendiente (estudiante):** las mediciones de Lighthouse anteriores son del diseño viejo; hay que repetirlas todas sobre la versión final.
+
+### 24. Segunda medición de Lighthouse (diseño final, sin extensiones)
+
+- **Propósito:** repetir las 6 mediciones después de corregir el SEO de `/historial` y de rediseñar la interfaz, ahora sin extensiones de Chrome.
+- **Evidencia:** los 6 informes de `calidad/lighthouse/` (los reemplacé yo) y `CALIDAD.md` §2. La IA extrajo las cifras leyendo el JSON incrustado en cada archivo, sin ejecutar el HTML, y comprobó que cada informe traía los textos nuevos (es decir, que medía el sitio ya redesplegado) y que no tenía avisos ni errores.
+- **Resultado:** rendimiento móvil 97–99 (antes 83–88), accesibilidad 100 y SEO 100 en todas, buenas prácticas 100 salvo un informe de escritorio que aún tenía una extensión (96). Todas las metas del enunciado se cumplen.
+- **Qué confirma:** el diagnóstico de la primera medición era correcto: la nota baja de rendimiento móvil se debía a una extensión de Chrome y no a la aplicación. La IA no tocó el código para «arreglar» esa nota antes de medir de nuevo.
+- **Observaciones:** el CLS en escritorio es 0,043 (cumple, no es 0); `home-desktop.html` conviene repetirlo en incógnito para que sea igual al resto. Los archivos `simular-*.html` son de `/historial`.
+- **Pendiente (estudiante):** INP real, PageSpeed Insights, axe DevTools, validador HTML y la confirmación de cabeceras en producción.
 
 ---
 
