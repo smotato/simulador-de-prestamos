@@ -5,7 +5,7 @@ Formato de cada entrada: **propósito · evidencia · validación · decisión**
 Herramienta: Claude Code (asistente de IA en la terminal). Sin claves, contraseñas ni datos personales
 compartidos con la IA (los permisos de `.claude/settings.json` bloquean leer `.env` y credenciales).
 
-Estado: actualizada hasta el commit `30b3c11` (14 commits). Lo marcado **TODO (estudiante)** lo debo
+Estado: actualizada hasta el commit `b6138c6` (20 commits). Lo marcado **TODO (estudiante)** lo debo
 completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni qué validé yo.
 
 ---
@@ -137,6 +137,35 @@ completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni q
 - **Validación:** se leyeron los archivos generados en `.next` (no con `curl`, que está bloqueado): `robots.txt`, `sitemap.xml`, título y `noindex` de la 404 y del historial.
 - **Decisiones:** `/historial` queda fuera del sitemap y con `noindex` (es personal); la URL base sale de `VERCEL_PROJECT_PRODUCTION_URL`. En local valen `http://localhost:3000`.
 - **Pendiente (estudiante):** tras desplegar, abrir `/robots.txt` y `/sitemap.xml` y confirmar que traen el dominio de Vercel.
+
+### 15. Hook propio `useSimulacion` · `d651940`
+
+- **Propósito:** el enunciado (sección 1) pide «un hook propio». `Simulador` y `Comparador` repetían el mismo bloque (leer la URL, ver si hay datos y validar).
+- **Evidencia:** `src/hooks/useSimulacion.ts` y su prueba; `Simulador.tsx` y `Comparador.tsx` ahora lo usan. `AGENTS.md` ganó una línea en «Estructura» para `src/hooks/`.
+- **Validación:** las 154 pruebas anteriores siguieron pasando sin tocarlas (el refactor no cambió el comportamiento) y se agregaron 5 del hook (URL vacía, válida, `?monto=abc`, opción `sistema` y `clave`).
+- **Decisión:** el hook solo lee y valida la URL; el cálculo (`amortizar` o `comparar`) queda en cada componente porque es distinto. No guarda estado: la URL sigue siendo la única fuente de verdad. TODO (estudiante): explicar con mis palabras por qué es un hook y no una función normal (usa `useSearchParams` y `useMemo`).
+
+### 16. Core Web Vitals con `useReportWebVitals` · `f5c127d`
+
+- **Propósito:** poder medir LCP, INP y CLS reales (Lighthouse no mide INP), como indica la sección 10.
+- **Evidencia:** `src/lib/webvitals.ts` y pruebas, `src/components/WebVitals.tsx` (no dibuja nada), incluido en `layout.tsx`.
+- **Validación:** pruebas de que cada métrica se compara con su meta (LCP ≤ 2500 ms, INP ≤ 200 ms, CLS ≤ 0,1, límite inclusivo) y de que a Next se le pasa siempre la misma referencia de función (la documentación advierte que cambiarla duplica datos). La compilación funciona.
+- **Límite:** no se pudo ver la salida real, hace falta un navegador. Cada métrica se imprime en la consola como `[web-vitals] LCP 1200 ms ✓ (meta ≤ 2500 ms)` y se acumula en `window.__webVitals`. TODO (estudiante): copiar esos valores a `CALIDAD.md`.
+
+### 17. Cabeceras de seguridad · `d89bb7b`
+
+- **Propósito:** la sección 4 pide cabeceras de seguridad (y ayudan en «Buenas prácticas» de Lighthouse).
+- **Evidencia:** `src/lib/cabeceras.ts` y pruebas; `next.config.ts` las aplica con `headers()`.
+- **Validación:** como `curl` está bloqueado por mi configuración, se comprobó leyendo `.next/routes-manifest.json` después de compilar: las 5 cabeceras (`nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy`, `Strict-Transport-Security`) quedan registradas para `/(.*)`.
+- **Decisión:** no se agregó `Content-Security-Policy`: Next inserta scripts en línea y una política estricta necesita nonces y vuelve dinámicas las páginas. Queda como mejora. TODO (estudiante): confirmar las cabeceras en la URL de Vercel con DevTools → Red.
+
+### 18. Limpieza de `public/` y peso de JavaScript · `b6138c6`
+
+- **Propósito:** quitar los 5 SVG de ejemplo de Next que no se usan y revisar la meta de JavaScript transferido ≤ 200 kB (sección 10).
+- **Evidencia:** se buscó cada archivo en el código (ninguno se usaba) antes de borrarlo; la compilación y las pruebas siguen igual. Para el peso se midió el HTML generado en `.next` con un script temporal fuera del repositorio.
+- **Resultado (gzip, aprox.):** JavaScript ≈ 182 kB en `/`, 181 kB en `/comparar` y 180 kB en `/historial` → **cumple** por poco margen (≈ 18 kB). Los tres trozos más grandes (70 + 44 + 39 kB) son React y Next; el código propio es una parte pequeña. HTML ≈ 3 kB, CSS ≈ 2 kB y una fuente de 29 kB.
+- **Corrección:** el script contaba la fuente como 0 kB por un error de expresión regular; se midió a mano el archivo (29 kB).
+- **Límite:** son números de laboratorio sobre la compilación local. Hay que repetir la medición con DevTools → Red (sin caché) sobre la URL de Vercel. Vercel además sirve con Brotli, que suele ser menor que gzip.
 
 ---
 
