@@ -1,0 +1,66 @@
+.contenedor {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+}
+
+.contenedor h2 {
+  margin-block: 0 0.75rem;
+  font-size: 1.25rem;
+}
+
+.frase {
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.frase:empty {
+  display: none;
+}
+
+.vacio {
+  margin: 0;
+  color: var(--texto-suave);
+}
+
+/* 360 px: uno debajo del otro; desde 768 px: lado a lado. */
+.sistemas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.sistema {
+  padding: 1rem;
+  border: 1px solid var(--borde);
+  border-radius: 0.5rem;
+}
+
+.sistema h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
+}
+
+.sistema a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  margin-top: 0.75rem;
+  color: var(--acento);
+  font-weight: 600;
+}
+
+@media (min-width: 48rem) {
+  .sistemas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* 1024 px: el formulario queda a un lado de la comparación. */
+@media (min-width: 64rem) {
+  .contenedor {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    align-items: start;
+  }
+}

@@ -5,13 +5,15 @@ import styles from "./Resumen.module.css";
 type Props = {
   resumen: DatosResumen;
   sistema: Sistema;
+  /** Si es false no se repite el nombre del sistema (cuando ya está en un título). */
+  conNombre?: boolean;
 };
 
-export function Resumen({ resumen, sistema }: Props) {
+export function Resumen({ resumen, sistema, conNombre = true }: Props) {
   const nombre = sistema === "frances" ? "Sistema francés" : "Sistema alemán";
   return (
     <>
-      <p className={styles.sistema}>{nombre}</p>
+      {conNombre && <p className={styles.sistema}>{nombre}</p>}
       <dl className={styles.lista}>
         <div className={styles.dato}>
           <dt>Primera cuota</dt>

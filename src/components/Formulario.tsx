@@ -14,9 +14,20 @@ type Props = {
   inicial: EntradaTexto;
   /** Errores que se muestran desde el principio (enlace con valores inválidos). */
   erroresIniciales: Errores;
+  /** Página donde se escribe la simulación al enviar (por defecto, el simulador). */
+  ruta?: string;
+  /** Si es false se oculta el sistema de pago (por ejemplo, al comparar los dos). */
+  conSistema?: boolean;
+  textoBoton?: string;
 };
 
-export function Formulario({ inicial, erroresIniciales }: Props) {
+export function Formulario({
+  inicial,
+  erroresIniciales,
+  ruta = "/",
+  conSistema = true,
+  textoBoton = "Simular",
+}: Props) {
   const router = useRouter();
   const [valores, setValores] = useState<EntradaTexto>({
     ...inicial,
@@ -44,7 +55,7 @@ export function Formulario({ inicial, erroresIniciales }: Props) {
       if (primero) document.getElementById(primero)?.focus();
       return;
     }
-    router.replace(`/?${aParams(valor)}`);
+    router.replace(`${ruta}?${aParams(valor)}`);
   }
 
   function propiedades(campo: Campo) {
@@ -110,17 +121,19 @@ export function Formulario({ inicial, erroresIniciales }: Props) {
         {mensaje("plazo", "Entre 1 y 360 meses.")}
       </div>
 
-      <div className={styles.campo}>
-        <label htmlFor="sistema">Sistema de pago</label>
-        <select {...propiedades("sistema")} onChange={(e) => cambiar("sistema", e.target.value)}>
-          <option value="frances">Francés (cuota fija)</option>
-          <option value="aleman">Alemán (abono fijo a capital)</option>
-        </select>
-        {mensaje("sistema", "El francés mantiene la cuota; el alemán baja la cuota cada mes.")}
-      </div>
+      {conSistema && (
+        <div className={styles.campo}>
+          <label htmlFor="sistema">Sistema de pago</label>
+          <select {...propiedades("sistema")} onChange={(e) => cambiar("sistema", e.target.value)}>
+            <option value="frances">Francés (cuota fija)</option>
+            <option value="aleman">Alemán (abono fijo a capital)</option>
+          </select>
+          {mensaje("sistema", "El francés mantiene la cuota; el alemán baja la cuota cada mes.")}
+        </div>
+      )}
 
       <button type="submit" className={styles.boton}>
-        Simular
+        {textoBoton}
       </button>
     </form>
   );

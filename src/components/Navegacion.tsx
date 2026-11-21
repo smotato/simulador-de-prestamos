@@ -6,6 +6,7 @@ import styles from "./Navegacion.module.css";
 
 const ENLACES = [
   { href: "/", texto: "Simulador" },
+  { href: "/comparar", texto: "Comparar" },
   { href: "/historial", texto: "Historial" },
 ];
 

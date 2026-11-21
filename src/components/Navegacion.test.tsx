@@ -12,6 +12,7 @@ describe("Navegacion", () => {
     const nav = screen.getByRole("navigation", { name: "Principal" });
     expect(nav).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Simulador" })).toHaveAttribute("href", "/");
+    expect(screen.getByRole("link", { name: "Comparar" })).toHaveAttribute("href", "/comparar");
     expect(screen.getByRole("link", { name: "Historial" })).toHaveAttribute("href", "/historial");
   });
 
