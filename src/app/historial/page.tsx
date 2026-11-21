@@ -3,8 +3,6 @@ import { Historial } from "@/components/Historial";
 
 export const metadata: Metadata = {
   title: "Historial",
-  // Es personal (vive en este navegador): no tiene sentido que aparezca en un buscador.
-  robots: { index: false },
   description: "Las últimas 10 simulaciones guardadas en este navegador.",
 };
 

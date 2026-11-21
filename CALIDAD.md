@@ -31,30 +31,39 @@ Taller R4 · Simulador de préstamos. Este documento reúne las evidencias de la
 
 ## 2. Lighthouse
 
-⏳ **Pendiente: se mide sobre la dirección de Vercel, no sobre `localhost`.**
+Primera medición hecha el **2026-11-21** sobre la dirección de producción, con Lighthouse 13.5.0 desde DevTools (throttling simulado, modo Navegación). Informes en `calidad/lighthouse/`.
 
-**Cómo medirlo (para cada página):**
+> ⚠️ **Medición provisional.** Cinco de los seis informes traen el aviso «las extensiones de Chrome afectaron al rendimiento» y el de `/` en escritorio terminó con un error al tomar la captura (`PROTOCOL_TIMEOUT`). Hay que **repetirla en una ventana de incógnito sin extensiones** (pasos abajo).
 
-1. Abrir la página en una ventana de incógnito (sin extensiones que alteren el resultado).
-2. DevTools → pestaña **Lighthouse** → modo **Navegación** → marcar las 4 categorías.
-3. Ejecutar una vez en **Móvil** y otra en **Escritorio**.
-4. Guardar el informe (⋮ → «Guardar como HTML») en `calidad/lighthouse/` con el nombre `inicio-movil.html`, `inicio-escritorio.html`, `comparar-movil.html`, etc.
+| Página       | Perfil     | Rendimiento | Accesibilidad | Buenas prácticas | SEO                   | Informe                                    |
+| ------------ | ---------- | ----------- | ------------- | ---------------- | --------------------- | ------------------------------------------ |
+| `/`          | Móvil      | **87** ⚠️   | 100           | 96               | 100                   | `home-mobile.html`                         |
+| `/`          | Escritorio | 100         | 100           | 96               | 100                   | `home-desktop.html` (con error de captura) |
+| `/comparar`  | Móvil      | **88** ⚠️   | 100           | 96               | 100                   | `comparar-mobile.html`                     |
+| `/comparar`  | Escritorio | 100         | 100           | 96               | 100                   | `comparar-desktop.html`                    |
+| `/historial` | Móvil      | **83** ⚠️   | 100           | 96               | **63** ⚠️ → corregido | `simular-mobile.html`                      |
+| `/historial` | Escritorio | 99          | 100           | 96               | **63** ⚠️ → corregido | `simular-desktop.html`                     |
 
-| Página       | Perfil     | Rendimiento | Accesibilidad | Buenas prácticas | SEO  | Informe                                        |
-| ------------ | ---------- | ----------- | ------------- | ---------------- | ---- | ---------------------------------------------- |
-| `/`          | Móvil      | TODO        | TODO          | TODO             | TODO | `calidad/lighthouse/inicio-movil.html`         |
-| `/`          | Escritorio | TODO        | TODO          | TODO             | TODO | `calidad/lighthouse/inicio-escritorio.html`    |
-| `/comparar`  | Móvil      | TODO        | TODO          | TODO             | TODO | `calidad/lighthouse/comparar-movil.html`       |
-| `/comparar`  | Escritorio | TODO        | TODO          | TODO             | TODO | `calidad/lighthouse/comparar-escritorio.html`  |
-| `/historial` | Móvil      | TODO        | TODO          | TODO             | TODO | `calidad/lighthouse/historial-movil.html`      |
-| `/historial` | Escritorio | TODO        | TODO          | TODO             | TODO | `calidad/lighthouse/historial-escritorio.html` |
+> Los archivos `simular-*.html` son en realidad de `/historial` (lo dice su URL); se les cambiará el nombre al repetir la medición.
 
-Este taller no tiene inicio de sesión, por eso no se pide la página con sesión iniciada. También conviene pasar la dirección por [PageSpeed Insights](https://pagespeed.web.dev) y guardar una captura.
+### Qué dicen los informes
 
-**Notas para interpretar el resultado:**
+1. **Accesibilidad 100 en las 6 mediciones y SEO 100 en `/` y `/comparar`**: cumplen con holgura. Buenas prácticas 96 cumple (≥ 95).
+2. **Rendimiento móvil 83–88: por debajo de la meta (≥ 90).** La causa principal es el **TBT (460–680 ms)**, y el detalle del informe indica que **la mayor tarea larga (395 ms) y el mayor tiempo de ejecución de JavaScript pertenecen a una extensión de Chrome** (`frame.bundle.js`, `trustedtypes-strip.bundle.js`), no a la aplicación. Las tareas largas propias son de 126 ms y 113 ms. Los demás indicadores sí cumplen: **LCP 1,7–1,9 s** (≤ 2,5 s), **CLS 0** y FCP 0,8–0,9 s. Por eso la cifra de rendimiento móvil no es fiable hasta repetirla sin extensiones.
+3. **SEO 63 en `/historial`: era mío.** La página tenía `noindex` (por ser personal) y la auditoría `is-crawlable` falla. El enunciado exige SEO ≥ 95 en las tres páginas, así que se **quitó el `noindex`** (la página sigue fuera del `sitemap.xml`). Requiere volver a desplegar y medir.
+4. **Buenas prácticas 96, no 100:** la única auditoría que no pasa es «Issues in the Issues panel» (tipo _Content security policy_, sin detalle). Probablemente viene de la misma extensión (_trusted types_); si persiste en incógnito, se investiga.
+5. **Escritorio:** rendimiento 99–100, LCP 0,4 s, CLS 0,004–0,039 (≤ 0,1).
+6. JavaScript sin usar: ≈ 28 kB (39 %) en uno de los trozos de React/Next. No es accionable sin quitar el framework.
 
-- `/historial` marca `noindex` a propósito (es personal): Lighthouse puede restar en SEO por eso. Es una decisión consciente, anótalo si ocurre.
-- Lighthouse no mide INP: usa TBT como aproximación (ver [§5](#5-core-web-vitals)).
+### Cómo repetir la medición (en incógnito)
+
+1. Abrir una **ventana de incógnito** y comprobar que las extensiones están desactivadas (o usar un perfil de Chrome sin extensiones).
+2. Para cada página: DevTools → **Lighthouse** → modo **Navegación** → marcar las 4 categorías → **Móvil** y luego **Escritorio**.
+3. Guardar cada informe (⋮ → «Guardar como HTML») en `calidad/lighthouse/` con estos nombres: `inicio-movil.html`, `inicio-escritorio.html`, `comparar-movil.html`, `comparar-escritorio.html`, `historial-movil.html`, `historial-escritorio.html`, y borrar los anteriores.
+4. Hacerlo **después de volver a desplegar** (para incluir la corrección de SEO).
+5. También conviene pasar la dirección por [PageSpeed Insights](https://pagespeed.web.dev) y guardar una captura.
+
+Este taller no tiene inicio de sesión, por eso no se pide la página con sesión iniciada. Lighthouse no mide INP: usa TBT como aproximación (ver [§5](#5-core-web-vitals)).
 
 ## 3. Responsive: 360 · 768 · 1024 px
 
@@ -176,14 +185,14 @@ La aplicación ya mide las métricas reales con `useReportWebVitals`: cada una s
 
 Lectura de https://simulador-de-prestamos-chi.vercel.app con una herramienta de lectura de páginas (convierte el HTML a texto: no muestra el `<head>` ni las cabeceras HTTP).
 
-| Comprobación                                                                                | Resultado                                                                                                                   |
-| ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `/`, `/comparar` y `/historial` responden                                                   | HTTP 200, con su `<h1>` y su título («Comparar sistemas · Simulador de préstamos», «Historial · Simulador de préstamos») ✅ |
-| `/robots.txt`                                                                               | Trae `Sitemap: https://simulador-de-prestamos-chi.vercel.app/sitemap.xml` (dominio de Vercel, no `localhost`) ✅            |
-| `/sitemap.xml`                                                                              | Lista `/` y `/comparar` con el dominio de Vercel; `/historial` no aparece, como se diseñó ✅                                |
-| Una dirección que no existe                                                                 | HTTP 404 ✅                                                                                                                 |
-| «Saltar al contenido» y el menú                                                             | Presentes en el HTML ✅                                                                                                     |
-| `<meta description>`, Open Graph, `noindex` de `/historial`, ícono y cabeceras de seguridad | ⏳ No se pudieron ver con esa herramienta: confirmarlas en DevTools (Elementos y Red → Encabezados de respuesta)            |
+| Comprobación                                                     | Resultado                                                                                                                   |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `/`, `/comparar` y `/historial` responden                        | HTTP 200, con su `<h1>` y su título («Comparar sistemas · Simulador de préstamos», «Historial · Simulador de préstamos») ✅ |
+| `/robots.txt`                                                    | Trae `Sitemap: https://simulador-de-prestamos-chi.vercel.app/sitemap.xml` (dominio de Vercel, no `localhost`) ✅            |
+| `/sitemap.xml`                                                   | Lista `/` y `/comparar` con el dominio de Vercel; `/historial` no aparece, como se diseñó ✅                                |
+| Una dirección que no existe                                      | HTTP 404 ✅                                                                                                                 |
+| «Saltar al contenido» y el menú                                  | Presentes en el HTML ✅                                                                                                     |
+| `<meta description>`, Open Graph, ícono y cabeceras de seguridad | ⏳ No se pudieron ver con esa herramienta: confirmarlas en DevTools (Elementos y Red → Encabezados de respuesta)            |
 
 **Observación sobre el HTML inicial:** la página sirve primero «Cargando simulador…» y el resultado aparece cuando el JavaScript lee la URL (`useSearchParams` dentro de `<Suspense>`). Es lo esperado en esta aplicación y no afecta al uso normal, pero conviene tenerlo presente al interpretar LCP en la sección 5 y explica que, sin JavaScript, solo se vea el mensaje de carga.
 

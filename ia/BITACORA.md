@@ -5,7 +5,7 @@ Formato de cada entrada: **propósito · evidencia · validación · decisión**
 Herramienta: Claude Code (asistente de IA en la terminal). Sin claves, contraseñas ni datos personales
 compartidos con la IA (los permisos de `.claude/settings.json` bloquean leer `.env` y credenciales).
 
-Estado: actualizada hasta el commit `e8007a6` (23 commits) más el de README y CALIDAD. Lo marcado **TODO (estudiante)** lo debo
+Estado: actualizada hasta la primera medición de Lighthouse en producción (entrada 22).
 completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni qué validé yo.
 
 ---
@@ -135,7 +135,7 @@ completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni q
 - **Propósito:** `robots.txt`, `sitemap.xml`, 404 propia, Open Graph, ícono.
 - **Evidencia:** `src/app/robots.ts`, `sitemap.ts`, `not-found.tsx`, `icon.svg`, `src/lib/sitio.ts`.
 - **Validación:** se leyeron los archivos generados en `.next` (no con `curl`, que está bloqueado): `robots.txt`, `sitemap.xml`, título y `noindex` de la 404 y del historial.
-- **Decisiones:** `/historial` queda fuera del sitemap y con `noindex` (es personal); la URL base sale de `VERCEL_PROJECT_PRODUCTION_URL`. En local valen `http://localhost:3000`.
+- **Decisiones:** `/historial` queda fuera del sitemap y, en esta primera versión, con `noindex` (es personal; **revertido después**, ver entrada 22); la URL base sale de `VERCEL_PROJECT_PRODUCTION_URL`. En local valen `http://localhost:3000`.
 - **Pendiente (estudiante):** tras desplegar, abrir `/robots.txt` y `/sitemap.xml` y confirmar que traen el dominio de Vercel.
 
 ### 15. Hook propio `useSimulacion` · `d651940`
@@ -196,6 +196,15 @@ completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni q
   - El `README.md` original estaba guardado en **UTF-16** (lo creó una herramienta de Windows) y las herramientas de la IA se negaron a editarlo; se eliminó y se recreó en UTF-8.
   - `npm run check` falló porque el `README.md` nuevo no cumplía el formato de Prettier; se formateó.
   - El primer registro de `npm run check` mostraba «exit code: 0» aunque el check había fallado (leía el código de `echo`, no el del comando). Se corrigió y se volvió a generar el registro.
+
+### 22. Primera medición de Lighthouse en producción
+
+- **Propósito:** medir las 3 páginas en móvil y escritorio sobre https://simulador-de-prestamos-chi.vercel.app (sección 10).
+- **Evidencia:** `calidad/lighthouse/*.html` (descargados por mí), resumen en `CALIDAD.md` §2. La IA extrajo las cifras leyendo el JSON incrustado en cada informe, sin ejecutar el HTML.
+- **Validación:** accesibilidad 100 en las 6; SEO 100 en `/` y `/comparar`; buenas prácticas 96; rendimiento móvil 83–88 (meta 90); SEO 63 en `/historial`.
+- **Decisión de la IA que resultó mala (corregida):** la IA había puesto `noindex` en `/historial` y anotó que «Lighthouse podría restar en SEO». Lo restó (63 < 95) y el enunciado exige ≥ 95 en las tres páginas, así que se **quitó el `noindex`**. Moraleja: una decisión razonable por su cuenta chocaba con un requisito medible. Pendiente volver a desplegar y medir.
+- **Cuidado con las mediciones:** 5 de 6 informes avisan de que una extensión de Chrome afectó al rendimiento, y el detalle muestra que la tarea larga más grande (395 ms) es de la extensión. La IA **no** dio la cifra de rendimiento móvil por buena y recomendó repetir en incógnito. Otro informe (`/` en escritorio) terminó con `PROTOCOL_TIMEOUT` al tomar la captura.
+- **Pendiente (estudiante):** repetir las 6 mediciones en incógnito tras redesplegar, y decidir si hace falta optimizar si el TBT sigue alto (la app tiene ≈ 181 kB de JavaScript, casi todo React y Next).
 
 ---
 
