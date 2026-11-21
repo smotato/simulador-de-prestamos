@@ -1,0 +1,48 @@
+/* Enlace «Saltar al contenido»: fuera de la pantalla hasta que recibe el foco con el teclado. */
+.saltar {
+  position: absolute;
+  top: 0;
+  left: 1rem;
+  z-index: 10;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  color: var(--texto-boton);
+  background: var(--acento);
+  border-radius: 0 0 0.5rem 0.5rem;
+  transform: translateY(-120%);
+}
+
+.saltar:focus {
+  transform: translateY(0);
+}
+
+.encabezado {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  max-width: 70rem;
+  margin: 0 auto 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--borde);
+}
+
+.marca {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.pie {
+  max-width: 70rem;
+  margin: 2rem auto 0;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--borde);
+  font-size: 0.875rem;
+  color: var(--texto-suave);
+}
+
+.pie p {
+  margin: 0;
+}
