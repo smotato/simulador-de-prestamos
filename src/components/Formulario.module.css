@@ -1,6 +1,6 @@
 .formulario {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
 }
 
@@ -16,6 +16,9 @@
 
 .campo input,
 .campo select {
+  /* Sin esto un campo no baja de su ancho natural y se sale de su columna. */
+  width: 100%;
+  min-width: 0;
   min-height: 2.75rem;
   padding: 0.5rem 0.75rem;
   font: inherit;
@@ -62,7 +65,7 @@
 
 @media (min-width: 48rem) {
   .formulario {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .boton {

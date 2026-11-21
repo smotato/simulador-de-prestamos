@@ -5,3 +5,7 @@ package-lock.json
 public
 calidad
 R4-simulador-de-prestamos.md
+
+# Playwright
+/playwright-report/
+/test-results/

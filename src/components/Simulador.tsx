@@ -55,7 +55,8 @@ export function Simulador() {
       </section>
 
       {simulacion && (
-        <section className={styles.tabla} aria-labelledby="titulo-tabla">
+        // Sin nombre propio: el recuadro desplazable de la tabla ya es la región con nombre.
+        <section className={styles.tabla}>
           <h2 id="titulo-tabla">Tabla de amortización</h2>
           <TablaAmortizacion key={clave} filas={simulacion.filas} />
         </section>

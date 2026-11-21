@@ -12,7 +12,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test:coverage": "vitest run --coverage",
-    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test:coverage"
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test:coverage",
+    "test:e2e": "npm run build && playwright test --project=chromium",
+    "e2e:capturas": "npm run build && playwright test --project=capturas"
   },
   "dependencies": {
     "next": "16.4.6",
@@ -20,6 +22,8 @@
     "react-dom": "19.3.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.65.1",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/jest-dom": "^8.0.0",
     "@testing-library/react": "^16.3.3",
