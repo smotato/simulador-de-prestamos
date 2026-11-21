@@ -2,7 +2,7 @@
 
 Taller de recuperación R4. Simula un préstamo con el **sistema francés** (cuota fija) o el **sistema alemán** (abono fijo a capital), muestra el resumen y la tabla de amortización, y permite compararlos.
 
-- **Dirección desplegada:** TODO (pegar aquí la URL de Vercel, por ejemplo `https://….vercel.app`)
+- **Dirección desplegada:** https://simulador-de-prestamos-chi.vercel.app
 - **Enunciado:** [`R4-simulador-de-prestamos.md`](R4-simulador-de-prestamos.md)
 - **Evidencias de calidad:** [`CALIDAD.md`](CALIDAD.md)
 - **Uso de la IA:** [`ia/BITACORA.md`](ia/BITACORA.md) y [`ia/PRUEBAS-CONTENCION.md`](ia/PRUEBAS-CONTENCION.md)

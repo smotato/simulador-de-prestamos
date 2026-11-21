@@ -7,7 +7,7 @@ Taller R4 · Simulador de préstamos. Este documento reúne las evidencias de la
 - ✅ **Medido** en este repositorio, con la fecha y cómo reproducirlo.
 - ⏳ **Pendiente**: necesita la dirección desplegada en Vercel, una herramienta del navegador (Lighthouse, axe DevTools, lector de pantalla) o un dispositivo real. Cada punto trae los pasos exactos.
 
-- **Dirección de producción:** TODO (la misma que en el `README`)
+- **Dirección de producción:** https://simulador-de-prestamos-chi.vercel.app
 - **Fecha de las mediciones automáticas:** 2026-11-21 (Node 22.14, Chromium de Playwright)
 
 ## 1. Resumen
@@ -172,6 +172,21 @@ La aplicación ya mide las métricas reales con `useReportWebVitals`: cada una s
 | `next/image` y `next/font`                                                                                          | No hay imágenes en la página; la fuente se carga con `next/font`                                                                                                                                                                                                   | ✅                                    |
 | Validador HTML del W3C                                                                                              | Ver [§4](#4-accesibilidad-wcag-22-aa)                                                                                                                                                                                                                              | ⏳                                    |
 
+### Verificado en producción (2026-11-21)
+
+Lectura de https://simulador-de-prestamos-chi.vercel.app con una herramienta de lectura de páginas (convierte el HTML a texto: no muestra el `<head>` ni las cabeceras HTTP).
+
+| Comprobación                                                                                | Resultado                                                                                                                   |
+| ------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `/`, `/comparar` y `/historial` responden                                                   | HTTP 200, con su `<h1>` y su título («Comparar sistemas · Simulador de préstamos», «Historial · Simulador de préstamos») ✅ |
+| `/robots.txt`                                                                               | Trae `Sitemap: https://simulador-de-prestamos-chi.vercel.app/sitemap.xml` (dominio de Vercel, no `localhost`) ✅            |
+| `/sitemap.xml`                                                                              | Lista `/` y `/comparar` con el dominio de Vercel; `/historial` no aparece, como se diseñó ✅                                |
+| Una dirección que no existe                                                                 | HTTP 404 ✅                                                                                                                 |
+| «Saltar al contenido» y el menú                                                             | Presentes en el HTML ✅                                                                                                     |
+| `<meta description>`, Open Graph, `noindex` de `/historial`, ícono y cabeceras de seguridad | ⏳ No se pudieron ver con esa herramienta: confirmarlas en DevTools (Elementos y Red → Encabezados de respuesta)            |
+
+**Observación sobre el HTML inicial:** la página sirve primero «Cargando simulador…» y el resultado aparece cuando el JavaScript lee la URL (`useSearchParams` dentro de `<Suspense>`). Es lo esperado en esta aplicación y no afecta al uso normal, pero conviene tenerlo presente al interpretar LCP en la sección 5 y explica que, sin JavaScript, solo se vea el mensaje de carga.
+
 ## 8. Retos de excelencia
 
 Se eligieron tres (el mínimo exigido), cada uno con su evidencia y cómo reproducirla.
@@ -227,7 +242,7 @@ All files     |   99.35 |     98.3 |     100 |   99.28
 
 ## 10. Lo que no se hizo (límites honestos)
 
-- **No hay medición en producción todavía:** Lighthouse, Core Web Vitals, PageSpeed, `robots.txt`/`sitemap.xml` con el dominio real y las cabeceras en Vercel dependen del despliegue.
+- **Medición en producción incompleta:** ya se confirmaron `robots.txt`, `sitemap.xml` y la 404 con el dominio real (§7), pero Lighthouse, Core Web Vitals, PageSpeed y las cabeceras HTTP siguen pendientes.
 - **No hay `Content-Security-Policy`** (ver [§7](#7-html-semántico-y-buenas-prácticas)).
 - **Sin imagen Open Graph** (solo título, descripción e idioma).
 - **Sin pruebas con lector de pantalla ni teléfono real** (ver [§4](#4-accesibilidad-wcag-22-aa) y [§3](#3-responsive-360--768--1024-px)).
