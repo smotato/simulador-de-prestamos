@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "defaultMode": "default",
+    "allow": [
+      "Bash(npm run dev)",
+      "Bash(npm run build)",
+      "Bash(npm run check)",
+      "Bash(npm run lint)",
+      "Bash(npm test)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(npx prettier *)",
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(git push)",
+      "Bash(npm install *)",
+      "Bash(npm i *)",
+      "Bash(npm ci)",
+      "Bash(npm uninstall *)",
+      "Bash(npx *)",
+      "Bash(vercel *)",
+      "Bash(git commit *)",
+      "Bash(git reset *)",
+      "Bash(git checkout *)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/secrets/**)",
+      "Read(**/credentials*)",
+      "Edit(./.env*)",
+      "Write(./.env*)",
+      "Read(../**)",
+      "Edit(../**)",
+      "Write(../**)",
+      "Bash(cat *.env*)",
+      "Bash(type *.env*)",
+      "Bash(cd ..*)",
+      "Bash(rm -rf *)",
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Read(//C:/Windows/**)",
+      "Read(//C:/Users/stive/.ssh/**)",
+      "Read(//C:/Users/stive/.aws/**)",
+      "Read(//C:/Users/stive/.config/**)",
+      "Read(//C:/Users/stive/OneDrive/Documentos/*.*)"
+    ]
+  }
+}
