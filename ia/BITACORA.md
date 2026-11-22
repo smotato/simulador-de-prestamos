@@ -16,8 +16,8 @@ completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni q
 
 - **Propósito:** reglas del proyecto para la IA (stack, comandos, estructura, qué sí y qué no).
 - **Evidencia:** `AGENTS.md`. La IA escribió el borrador a partir del enunciado R4 (sección 11), en primera persona, y conservó el bloque de Next.js que `next dev` regenera.
-- **Validación:** TODO (estudiante): qué leí y qué cambié yo.
-- **Decisión:** TODO (estudiante).
+- **Validación:** leí el `AGENTS.md` completo (unas 75 líneas) y lo comparé con lo que pide la sección 11: stack, comandos, estructura, lo que sí y lo que no, y menos de 100 líneas. Una prueba (`ia/contencion.test.ts`) vigila que no pase de 100 líneas.
+- **Decisión:** lo acepté como la IA lo redactó, sin cambiar reglas, porque estaba de acuerdo con todas. Más adelante solo se le agregó la línea de `src/hooks/` cuando creamos el hook.
 
 ### 2. Permisos de seguridad (`.claude/settings.json`)
 
@@ -50,14 +50,14 @@ completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni q
 - **Propósito:** `src/lib/prestamo.ts` con `tasaMensual`, `cuotaFrancesa` y `amortizar`, sin React.
 - **Evidencia:** `src/lib/prestamo.test.ts`.
 - **Validación:** las pruebas reproducen las cifras de la sección 5 del enunciado (francés: cuota 885.621, intereses 627.448; alemán: cuota 1 de 928.221, intereses 616.772; ahorro 10.676). Además, en ambos sistemas la suma de abonos es el monto, el saldo final es 0 y no hay `NaN` con tasa 0.
-- **Decisión:** se siguen las reglas de redondeo del enunciado (`Math.round`, última cuota con el saldo restante). TODO (estudiante): explicar con mis palabras por qué la última cuota difiere unos pesos.
+- **Decisión:** se siguen las reglas de redondeo del enunciado (`Math.round`, última cuota con el saldo restante). Con mis palabras: cada cuota se redondea a pesos enteros, y esos redondeos se van acumulando. Si en la última cuota siguiera pagando la cuota fija, el saldo no llegaría exactamente a 0. Por eso en la última el abono a capital es igual al saldo que queda, y la cuota se ajusta unos pesos (en el ejemplo: 885.617 contra 885.621).
 
 ### 6. Validación · `e9506f7`
 
 - **Propósito:** `validar()` con un mensaje en español por campo.
 - **Evidencia:** `src/lib/validar.ts` y su prueba.
 - **Validación:** acepta «12,5», rechaza «abc», plazo 0 y 361.
-- **Decisión a confirmar:** el enunciado dice que `validar` «descarta letras y espacios». La IA lo interpretó como **rechazar con error** (así lo exige el criterio de `?monto=abc`). TODO (estudiante): confirmar esa interpretación con el profesor.
+- **Decisión a confirmar:** el enunciado dice que `validar` «descarta letras y espacios». La IA lo interpretó como **rechazar con error** (así lo exige el criterio de `?monto=abc`). Yo estuve de acuerdo con esa interpretación: si alguien escribe «abc», lo claro para el usuario es decirle el error y no borrarle lo que escribió. No se la consulté al profesor; si él la entiende de otra forma, es un cambio pequeño en `limpiar`.
 
 ### 7. Formato, URL y formulario controlado · `5aef43b`, `c0a3ec5`
 
@@ -76,7 +76,7 @@ completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni q
 - **Propósito:** calcular la tabla con `useMemo` a partir de la URL (sin estado aparte) y mostrarla accesible.
 - **Evidencia:** `Simulador.tsx`, `Resumen.tsx`, `TablaAmortizacion.tsx` y pruebas.
 - **Validación:** pruebas de `<caption>`, `th scope`, 12 filas por página con 360 cuotas, región desplazable con `tabindex` y `aria-label`, y anuncio «Simulación calculada: cuota de…».
-- **Decisión:** la región `aria-live` existe siempre (aunque vacía) para que el lector de pantalla anuncie el cambio. TODO (estudiante): verificar con NVDA/VoiceOver.
+- **Decisión:** la región `aria-live` existe siempre (aunque vacía) para que el lector de pantalla anuncie el cambio. Todavía **no** lo he verificado con un lector de pantalla; está pendiente en `CALIDAD.md` §4.
 
 ### 9. Copiar enlace y descargar CSV · `20d0083`
 
@@ -113,7 +113,7 @@ completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni q
 - **Evidencia:** `src/lib/comparar.ts`, `Comparador.tsx` y pruebas (ahorro de $10.676, caso de tasa 0).
 - **Decisiones:**
   - `Formulario` se reutiliza con las propiedades `ruta`, `conSistema` y `textoBoton`.
-  - `/comparar` **no guarda en el historial**: calcula dos sistemas a la vez y habría que elegir uno. Una prueba fija ese comportamiento. TODO (estudiante): confirmar si prefiero otra cosa.
+  - `/comparar` **no guarda en el historial**: calcula dos sistemas a la vez y habría que elegir uno. Una prueba fija ese comportamiento. Estuve de acuerdo con esa decisión y la dejé así.
   - Con tasa 0 o plazo 1 los dos pagan lo mismo y la frase lo dice en vez de «$ 0 menos».
 
 ---
@@ -143,21 +143,21 @@ completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni q
 - **Propósito:** el enunciado (sección 1) pide «un hook propio». `Simulador` y `Comparador` repetían el mismo bloque (leer la URL, ver si hay datos y validar).
 - **Evidencia:** `src/hooks/useSimulacion.ts` y su prueba; `Simulador.tsx` y `Comparador.tsx` ahora lo usan. `AGENTS.md` ganó una línea en «Estructura» para `src/hooks/`.
 - **Validación:** las 154 pruebas anteriores siguieron pasando sin tocarlas (el refactor no cambió el comportamiento) y se agregaron 5 del hook (URL vacía, válida, `?monto=abc`, opción `sistema` y `clave`).
-- **Decisión:** el hook solo lee y valida la URL; el cálculo (`amortizar` o `comparar`) queda en cada componente porque es distinto. No guarda estado: la URL sigue siendo la única fuente de verdad. TODO (estudiante): explicar con mis palabras por qué es un hook y no una función normal (usa `useSearchParams` y `useMemo`).
+- **Decisión:** el hook solo lee y valida la URL; el cálculo (`amortizar` o `comparar`) queda en cada componente porque es distinto. No guarda estado: la URL sigue siendo la única fuente de verdad. Con mis palabras: es un hook y no una función normal porque usa otros hooks de React (`useSearchParams` y `useMemo`), y esos solo se pueden llamar dentro de un componente o de otro hook. Además evita repetir el mismo código en `Simulador` y `Comparador`.
 
 ### 16. Core Web Vitals con `useReportWebVitals` · `f5c127d`
 
 - **Propósito:** poder medir LCP, INP y CLS reales (Lighthouse no mide INP), como indica la sección 10.
 - **Evidencia:** `src/lib/webvitals.ts` y pruebas, `src/components/WebVitals.tsx` (no dibuja nada), incluido en `layout.tsx`.
 - **Validación:** pruebas de que cada métrica se compara con su meta (LCP ≤ 2500 ms, INP ≤ 200 ms, CLS ≤ 0,1, límite inclusivo) y de que a Next se le pasa siempre la misma referencia de función (la documentación advierte que cambiarla duplica datos). La compilación funciona.
-- **Límite:** no se pudo ver la salida real, hace falta un navegador. Cada métrica se imprime en la consola como `[web-vitals] LCP 1200 ms ✓ (meta ≤ 2500 ms)` y se acumula en `window.__webVitals`. TODO (estudiante): copiar esos valores a `CALIDAD.md`.
+- **Límite:** no se pudo ver la salida real, hace falta un navegador. Cada métrica se imprime en la consola como `[web-vitals] LCP 1200 ms ✓ (meta ≤ 2500 ms)` y se acumula en `window.__webVitals`. Todavía **no** he copiado los valores reales a `CALIDAD.md` (el INP necesita interactuar con la página en producción); está pendiente en la sección 5.
 
 ### 17. Cabeceras de seguridad · `d89bb7b`
 
 - **Propósito:** la sección 4 pide cabeceras de seguridad (y ayudan en «Buenas prácticas» de Lighthouse).
 - **Evidencia:** `src/lib/cabeceras.ts` y pruebas; `next.config.ts` las aplica con `headers()`.
 - **Validación:** como `curl` está bloqueado por mi configuración, se comprobó leyendo `.next/routes-manifest.json` después de compilar: las 5 cabeceras (`nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy`, `Strict-Transport-Security`) quedan registradas para `/(.*)`.
-- **Decisión:** no se agregó `Content-Security-Policy`: Next inserta scripts en línea y una política estricta necesita nonces y vuelve dinámicas las páginas. Queda como mejora. TODO (estudiante): confirmar las cabeceras en la URL de Vercel con DevTools → Red.
+- **Decisión:** no se agregó `Content-Security-Policy`: Next inserta scripts en línea y una política estricta necesita nonces y vuelve dinámicas las páginas. Queda como mejora. Todavía **no** las he confirmado en la URL de Vercel con DevTools (Red → Encabezados de respuesta); está pendiente.
 
 ### 18. Limpieza de `public/` y peso de JavaScript · `b6138c6`
 
@@ -184,14 +184,14 @@ completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni q
   1. **A 1024 px el formulario se salía de su columna** y se montaba sobre el resumen (los campos de texto no se encogían por debajo de su ancho natural en una cuadrícula de `1fr`). Se detectó mirando las capturas; antes de corregir se escribió una prueba que lo reproducía (falló) y se arregló con `minmax(0, 1fr)`, `width: 100%` y `min-width: 0`.
   2. **Dos regiones casi iguales** («Tabla de amortización» en la `<section>` y en el recuadro desplazable). Se quitó el nombre de la `<section>`; el recuadro (el que pide el enunciado) conserva `role="region"` y `aria-label`.
 - **Errores míos/de la IA:** un comentario JSX en un lugar inválido rompió la compilación; una prueba contaba los `<li>` del menú junto con los del historial.
-- **Límites:** solo Chromium (no Firefox ni Safari), emulación de preferencias (no un lector de pantalla real, no un teléfono real). TODO (estudiante): mirar las capturas y probar en un teléfono.
+- **Límites:** solo Chromium (no Firefox ni Safari), emulación de preferencias (no un lector de pantalla real, no un teléfono real). Miré las capturas generadas, que se ven bien; probar en un teléfono real sigue **pendiente**.
 
 ### 21. README y CALIDAD.md
 
 - **Propósito:** entregables de la sección 9.2 (instrucciones y evidencias de calidad).
 - **Evidencia:** `README.md`, `CALIDAD.md`, `calidad/evidencias/npm-run-check.txt`, `calidad/evidencias/e2e-playwright.txt` y `calidad/capturas/`.
 - **Validación:** antes de escribir las cifras en `CALIDAD.md` se volvieron a medir (cobertura 99,35 %, 203 pruebas, 111 pruebas del navegador) y se contaron las pruebas citadas (35 de scroll horizontal, 56 de axe, 9 de axe en Vitest, 14 del historial). Se comprobó que no hay animaciones antes de afirmar que `prefers-reduced-motion` no aplica.
-- **Honestidad del documento:** lo medido va marcado ✅ con fecha y cómo reproducirlo; lo que depende de Vercel, Lighthouse, un lector de pantalla o un teléfono real va marcado ⏳ con los pasos exactos y `TODO`. Nada se inventó. TODO (estudiante): completar los ⏳ y pegar la URL de producción.
+- **Honestidad del documento:** lo medido va marcado ✅ con fecha y cómo reproducirlo; lo que depende de Vercel, Lighthouse, un lector de pantalla o un teléfono real va marcado ⏳ con los pasos exactos. Nada se inventó. Pendiente: completar los ⏳ que dependen de herramientas del navegador, de un lector de pantalla y de un teléfono real.
 - **Correcciones durante el trabajo:**
   - El `README.md` original estaba guardado en **UTF-16** (lo creó una herramienta de Windows) y las herramientas de la IA se negaron a editarlo; se eliminó y se recreó en UTF-8.
   - `npm run check` falló porque el `README.md` nuevo no cumplía el formato de Prettier; se formateó.
@@ -244,7 +244,7 @@ completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni q
 
 ## Casos en que rechacé o corregí a la IA
 
-1. **Co-autoría en el commit.** La IA preparó el primer commit con la línea `Co-Authored-By: Claude …` (así lo indicaban sus instrucciones). Yo rechacé ese comando y pedí que se hiciera **sin** ponerla como coautora; la IA rehízo el commit sin esa línea y así quedaron todos los commits del proyecto. Motivo: TODO (estudiante), con mis palabras por qué lo pedí.
+1. **Co-autoría en el commit.** La IA preparó el primer commit con la línea `Co-Authored-By: Claude …` (así lo indicaban sus instrucciones). Yo rechacé ese comando y pedí que se hiciera **sin** ponerla como coautora; la IA rehízo el commit sin esa línea y así quedaron todos los commits del proyecto. Motivo: el taller es individual y quise que los commits quedaran solo a mi nombre.
 
 2. **No hubo.** Estuve de acuerdo con las decisiones que tomó la IA durante el trabajo (o casi siempre), por eso no las rechacé ni las corregí.
 3. **No hubo.** Mismo motivo: no tuve desacuerdos más allá del caso 1.
