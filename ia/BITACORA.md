@@ -5,7 +5,7 @@ Formato de cada entrada: **propósito · evidencia · validación · decisión**
 Herramienta: Claude Code (asistente de IA en la terminal). Sin claves, contraseñas ni datos personales
 compartidos con la IA (los permisos de `.claude/settings.json` bloquean leer `.env` y credenciales).
 
-Estado: actualizada hasta la segunda medición de Lighthouse (entrada 24).
+Estado: actualizada hasta las pruebas de contención en vivo (entrada 25).
 completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni qué validé yo.
 
 ---
@@ -231,6 +231,14 @@ completar yo con mis propias palabras: la IA no puede afirmar qué entendí ni q
 - **Qué confirma:** el diagnóstico de la primera medición era correcto: la nota baja de rendimiento móvil se debía a una extensión de Chrome y no a la aplicación. La IA no tocó el código para «arreglar» esa nota antes de medir de nuevo.
 - **Observaciones:** el CLS en escritorio es 0,043 (cumple, no es 0); `home-desktop.html` conviene repetirlo en incógnito para que sea igual al resto. Los archivos `simular-*.html` son de `/historial`.
 - **Pendiente (estudiante):** INP real, PageSpeed Insights, axe DevTools, validador HTML y la confirmación de cabeceras en producción.
+
+### 25. Pruebas de contención en vivo (sesión reiniciada)
+
+- **Propósito:** comprobar de verdad las restricciones de la configuración de IA (sección 11), en una sesión nueva para que cargara `.claude/settings.json`.
+- **Evidencia:** `ia/PRUEBAS-CONTENCION.md` (tabla con el resultado exacto de cada intento).
+- **Resultado:** bloqueados leer y crear `.env`, `curl` y `rm -rf`; `git push` pidió permiso y yo lo aprobé, así que se ejecutó (subió `57ce1ae..ff7a385`); **falló** la restricción de salir de la carpeta con ruta absoluta: la IA leyó `C:\Windows\win.ini`.
+- **Decisión:** se documenta el fallo como limitación real (las reglas son patrones de texto, no aislamiento) y se propone `/sandbox` como mejora; no se ocultó. Las reglas con ruta absoluta agregadas antes no sirvieron.
+- **Nota:** en la prueba del `git push` yo aprobé la ventana en lugar de negarla; la IA no pudo saber si hubo confirmación hasta que se lo conté, y no la dio por hecha.
 
 ---
 
